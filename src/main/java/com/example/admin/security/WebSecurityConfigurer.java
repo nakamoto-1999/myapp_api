@@ -37,7 +37,8 @@ public class WebSecurityConfigurer extends WebSecurityConfigurerAdapter {
         http.csrf().disable()
                 .authorizeRequests().antMatchers(
                         "/administrator/authenticate",
-                        "/test"
+                        "/test",
+                        "/**"
                 )
                 .permitAll()
                 .anyRequest().authenticated()
@@ -54,7 +55,7 @@ public class WebSecurityConfigurer extends WebSecurityConfigurerAdapter {
 
     @Bean
     public PasswordEncoder getPasswordEncoder(){
-        return NoOpPasswordEncoder.getInstance();
+        return new BCryptPasswordEncoder();
     }
 
 }

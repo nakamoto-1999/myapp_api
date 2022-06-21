@@ -70,25 +70,7 @@ public class PostServiceImpl implements PostService{
     }
 
     private PostResponse getResponse(Post post){
-        return new PostResponse(
-                post.getPostId(),
-                post.getIp(),
-                this.getUserResponse(post.getUser()),
-                post.getContent(),
-                post.getIsValid(),
-                post.getCreatedAt(),
-                post.getUpdatedAt()
-        );
-    }
-
-    private UserResponse getUserResponse(User user){
-        return new UserResponse(
-                user.getUserId(),
-                user.getName(),
-                user.getIsValid(),
-                user.getCreatedAt(),
-                user.getUpdatedAt()
-        );
+        return new PostResponse(post);
     }
 
     @Override

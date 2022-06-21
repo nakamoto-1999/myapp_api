@@ -2,13 +2,12 @@ package com.example.admin.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import org.springframework.stereotype.Component;
 
 @Data
 @AllArgsConstructor
-public class AdministratorAuthenticationRequest {
+public class UserAuthRequest {
 
-        String name;
+        String email;
         String password;
 
 }

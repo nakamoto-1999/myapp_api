@@ -1,8 +1,10 @@
 package com.example.admin.service;
 
 import com.example.admin.entity.Post;
+import com.example.admin.entity.Role;
 import com.example.admin.entity.User;
 import com.example.admin.repository.PostRepository;
+import com.example.admin.repository.RoleRepository;
 import com.example.admin.repository.UserRepository;
 import com.example.admin.response.PostResponse;
 import com.example.admin.response.UserResponse;
@@ -31,15 +33,20 @@ public class UserServiceImpl implements UserService{
     @Autowired
     MyPasswordEncorder passwordEncorder;
 
+    @Autowired
+    RoleRepository roleRepository;
+
     @Override
-    public void create(String name, String email, String password) {
+    public void create(String name, String email, String password , Integer roleId) {
         User user = new User();
         user.setName(name);
         user.setEmail(email);
-        user.setPassword(
-                this.passwordEncorder.encord(password)
-        );
+        user.setPassword(this.passwordEncorder.encord(password));
+        user.setIsValid(true);
+        user.setRole(roleRepository.getById(roleId));
+        //user.setRoleId(roleId);
         user.setCreatedAt(timestampManager.getNow());
+        System.out.println(user);
         userRepository.save(user);
     }
 
@@ -61,13 +68,7 @@ public class UserServiceImpl implements UserService{
 
     //エンティティをレスポンスに変換する
     private UserResponse getResponse(User user){
-        return new UserResponse(
-                user.getUserId(),
-                user.getName(),
-                user.getIsValid(),
-                user.getCreatedAt(),
-                user.getUpdatedAt()
-        );
+        return new UserResponse(user);
     }
 
     @Override

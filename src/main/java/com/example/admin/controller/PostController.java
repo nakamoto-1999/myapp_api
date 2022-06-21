@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 
 @RestController
+@CrossOrigin("http://localhost:3000")
 public class PostController {
 
     @Autowired
@@ -21,18 +22,18 @@ public class PostController {
         return ResponseEntity.ok(postService.getAllResponses());
     }
 
-    @GetMapping("/post/{postId}")
+    @GetMapping("admin/post/{postId}")
     ResponseEntity<?> getByPostId(@PathVariable Integer postId){
         return ResponseEntity.ok(postService.getResponseByPostId(postId));
     }
 
-    @PutMapping("/post/{postId}/validate")
+    @PutMapping("/admin/post/{postId}/validate")
     ResponseEntity<?> validate(@PathVariable Integer postId){
         postService.validate(postId);
         return ResponseEntity.ok(null);
     }
 
-    @PutMapping("/post/{postId}/invalidate")
+    @PutMapping("/admin/post/{postId}/invalidate")
     ResponseEntity<?> invalidate(@PathVariable Integer postId){
         postService.invalidate(postId);
         return ResponseEntity.ok(null);

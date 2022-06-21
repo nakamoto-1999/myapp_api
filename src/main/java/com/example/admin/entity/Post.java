@@ -4,6 +4,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+import org.hibernate.engine.profile.Fetch;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
@@ -11,7 +14,7 @@ import java.util.Date;
 
 
 @Entity
-@Table(name = "posts")
+@Table(name = "post")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -25,9 +28,13 @@ public class Post {
     @Column(name = "ip")
     private String ip;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
     private User user;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "thread_id")
+    private Thread thread;
 
     @Column(name = "content")
     private String content;
