@@ -17,7 +17,7 @@ public interface PostRepository extends JpaRepository<Post , Integer> {
     @Query("DELETE FROM Post p WHERE p.user.userId = ?1")
     void deleteAllByUserId(Integer userId);
 
-    @Query("SELECT DISTINCT p FROM Post p WHERE p.postId = ?1")
+    @Query("SELECT DISTINCT p FROM Post p WHERE p.user.userId = ?1")
     List<Post> findAllByUserId(Integer userId);
 
 }

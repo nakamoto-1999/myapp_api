@@ -2,15 +2,13 @@ package com.example.admin.security;
 
 import com.example.admin.entity.User;
 import com.example.admin.repository.UserRepository;
-import com.example.admin.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 @Service
-public class MyUserDtailsServiceImpl implements MyUserDtailsService{
+public class MyUserDetailsServiceImpl implements MyUserDetailsService {
 
     @Autowired
     UserRepository userRepository;
@@ -27,7 +25,7 @@ public class MyUserDtailsServiceImpl implements MyUserDtailsService{
             throw new UsernameNotFoundException(email + " Not Found!");
         }
 
-        return new MyUserDetails(user);
+        return new MyUserDetailsImpl(user);
     }
 
     @Override
@@ -42,7 +40,7 @@ public class MyUserDtailsServiceImpl implements MyUserDtailsService{
             throw new UsernameNotFoundException(userId + "Not Found");
         }
 
-        return new MyUserDetails(user);
+        return new MyUserDetailsImpl(user);
     }
 
 }

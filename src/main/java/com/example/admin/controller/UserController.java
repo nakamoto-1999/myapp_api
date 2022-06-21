@@ -22,33 +22,33 @@ public class UserController {
     @Autowired
     PostService postService;
 
-    @PostMapping("/user/create")
+    @PostMapping("/public/user/create")
     public ResponseEntity<?> create(@Validated @RequestBody UserCreateUpdateRequest request){
         //一般ユーザーの場合はroleIdが1
         userService.create(request.getName() , request.getEmail() , request.getPassword() , 1);
         return ResponseEntity.ok(null);
     }
 
-    @PostMapping("auth/admin/user/create")
+    @PostMapping("/auth/admin/user/create")
     public ResponseEntity<?> createAdmin(@Validated @RequestBody UserCreateUpdateRequest request){
         //一般ユーザーの場合はroleIdが1
         userService.create(request.getName() , request.getEmail() , request.getPassword() , 2);
         return ResponseEntity.ok(null);
     }
 
-    @GetMapping("/admin/user/all")
+    @GetMapping("/auth/admin/user/all")
     //一般ユーザーの場合はroleIdが2
     public ResponseEntity<?> getAll(){
         return ResponseEntity.ok(userService.getAllResponses());
     }
 
-    @GetMapping("/admin/user/{userId}")
+    @GetMapping("/auth/admin/user/{userId}")
     public ResponseEntity<?> getByUserId(@PathVariable Integer userId){
         UserResponse response = userService.getResponseByUserId(userId);
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/admin/user/{userId}/posts")
+    @GetMapping("/auth/admin/user/{userId}/posts")
     public ResponseEntity<?> getPostsByUserId(@PathVariable Integer userId){
         //ユーザーの投稿も一括で取得する
         return ResponseEntity.ok(
@@ -56,30 +56,28 @@ public class UserController {
         );
     }
 
-    @PutMapping("user/{userId}/update")
-    public ResponseEntity<?> update(@PathVariable Integer userId , @RequestBody UserCreateUpdateRequest request){
-        userService.update(userId , request.getName() , request.getEmail() , request.getPassword());
-        return ResponseEntity.ok(null);
-    }
-
-    @PutMapping("admin/user/{userId}/validate")
+    @PutMapping("/auth/admin/user/{userId}/validate")
     public ResponseEntity<?> validate(@PathVariable Integer userId){
         userService.validate(userId);
         return ResponseEntity.ok(null);
     }
 
-    @PutMapping("admin/user/{userId}/invalidate")
+    @PutMapping("/auth/admin/user/{userId}/invalidate")
     public ResponseEntity<?> invalidate(@PathVariable Integer userId){
         userService.invalidate(userId);
         return ResponseEntity.ok(null);
     }
 
-    @DeleteMapping("admin/user/{userId}/delete")
+    @DeleteMapping("/auth/admin/user/{userId}/delete")
     public ResponseEntity<?> delete(@PathVariable Integer userId){
         userService.delete(userId);
-        postService.deleteAllByUserId(userId);
         return ResponseEntity.ok(null);
     }
 
+    //@PutMapping("auth/general/user/{userId}/update")
+    //public ResponseEntity<?> update(@PathVariable Integer userId , @RequestBody UserCreateUpdateRequest request){
+    //    userService.update(userId , request.getName() , request.getEmail() , request.getPassword());
+    //    return ResponseEntity.ok(null);
+    //}
 
 }

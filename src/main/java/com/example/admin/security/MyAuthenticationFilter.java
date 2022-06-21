@@ -2,7 +2,6 @@ package com.example.admin.security;
 
 import com.example.admin.request.UserAuthForm;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -10,26 +9,21 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
-import org.springframework.validation.annotation.Validated;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.validation.constraints.NotEmpty;
 import java.io.IOException;
 import java.util.ArrayList;
 
 
-public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
+public class MyAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
     private AuthenticationManager authenticationManager;
     private PasswordEncoder passwordEncoder;
 
-    @Autowired
-    private JwtManager jwtManager;
-
-    public JwtAuthenticationFilter(AuthenticationManager authenticationManager , PasswordEncoder passwordEncoder) {
+    public MyAuthenticationFilter(AuthenticationManager authenticationManager , PasswordEncoder passwordEncoder) {
 
         this.authenticationManager = authenticationManager;
         this.passwordEncoder = passwordEncoder;
@@ -57,15 +51,18 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     }
 
     @Override
+    //認証成功時の処理
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
 
-        try {
-            MyUserDetails userDetails = (MyUserDetails)authResult.getPrincipal();
-            //String jwt = jwtManager.generateToken("hello");
-            System.out.println(userDetails.getUserId());
-        }
-        catch (Exception e){
-            System.out.println(e);
-        }
+        MyUserDetails userDetails = (MyUserDetails)authResult.getPrincipal();
+
+        //主キーからJWTを生成
+        JwtUtil jwtUtil = new JwtUtil();
+        String jwt = jwtUtil.generateToken(
+                userDetails.getUserId().toString()
+        );
+
+        response.addHeader("AuthenticationToken" ,"Bearer " + jwt);
+
     }
 }

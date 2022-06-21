@@ -6,19 +6,20 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
-@Table(name = "access_authorization")
 @Entity
+@Table(name = "access_authorization")
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class AccessAuthorization {
+public class AccessAuthorization implements Serializable {
 
-    @ManyToOne
-    @JoinColumn(name = "role_id")
+    @EmbeddedId
+    AccessAuthorizationPk key;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "role_id" , insertable = false , updatable = false)
     Role role;
-
-    @Column(name = "uri")
-    String uri;
 
 }

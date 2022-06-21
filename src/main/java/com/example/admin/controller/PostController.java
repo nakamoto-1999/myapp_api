@@ -17,29 +17,29 @@ public class PostController {
     @Autowired
     PostService postService;
 
-    @GetMapping("/post/all")
+    @GetMapping("/auth/admin/post/all")
     ResponseEntity<?> getAll(){
         return ResponseEntity.ok(postService.getAllResponses());
     }
 
-    @GetMapping("admin/post/{postId}")
+    @GetMapping("/auth/admin/post/{postId}")
     ResponseEntity<?> getByPostId(@PathVariable Integer postId){
         return ResponseEntity.ok(postService.getResponseByPostId(postId));
     }
 
-    @PutMapping("/admin/post/{postId}/validate")
+    @PutMapping("/auth/admin/post/{postId}/validate")
     ResponseEntity<?> validate(@PathVariable Integer postId){
         postService.validate(postId);
         return ResponseEntity.ok(null);
     }
 
-    @PutMapping("/admin/post/{postId}/invalidate")
+    @PutMapping("/auth/admin/post/{postId}/invalidate")
     ResponseEntity<?> invalidate(@PathVariable Integer postId){
         postService.invalidate(postId);
         return ResponseEntity.ok(null);
     }
 
-    @DeleteMapping("/post/{postId}/delete")
+    @DeleteMapping("/auth/admin/post/{postId}/delete")
     ResponseEntity<?> delete(@PathVariable Integer postId){
         postService.delete(postId);
         return ResponseEntity.ok(null);
