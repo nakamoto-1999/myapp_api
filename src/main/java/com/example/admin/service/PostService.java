@@ -10,7 +10,6 @@ public interface PostService {
 
     void create(String ip ,User user, String content);
     List<PostResponse> getAllResponses();
-    Post getEntityByPostId(Integer postId);
     PostResponse getResponseByPostId(Integer postId);
     List<PostResponse> getAllResponsesByUserId(Integer userId);
     void validate(Integer postId);

@@ -6,6 +6,7 @@ import com.example.admin.repository.PostRepository;
 import com.example.admin.response.PostResponse;
 import com.example.admin.response.UserResponse;
 import com.example.admin.utility.TimestampManager;
+import org.hibernate.boot.model.naming.IllegalIdentifierException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.source.InvalidConfigurationPropertyValueException;
 import org.springframework.stereotype.Service;
@@ -51,21 +52,22 @@ public class PostServiceImpl implements PostService{
         List<Post> posts = postRepository.findAllByUserId(userId);
         List<PostResponse> postResponses = new ArrayList<>();
         for(Post post : posts){
-            postResponses.add(this.getResponse(post));
+            postResponses.add(new PostResponse(post));
         }
         return postResponses;
     }
 
     @Override
     public PostResponse getResponseByPostId(Integer postId) {
+
         Post post = this.getEntityByPostId(postId);
-        return this.getResponse(post);
+        return new PostResponse(post);
+
     }
 
-    @Override
     public Post getEntityByPostId(Integer postId) {
         Post post = postRepository.findById(postId)
-                .orElseThrow(()->new InvalidConfigurationPropertyValueException("Post Not Found" , postId , "Post Not Found By PostID"));
+                .orElseThrow(()-> new IllegalArgumentException());
         return post;
     }
 

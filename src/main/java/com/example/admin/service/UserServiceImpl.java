@@ -55,7 +55,7 @@ public class UserServiceImpl implements UserService{
         List<User> users = userRepository.findAll();
         List<UserResponse> userResponses = new ArrayList<>();
         for(User user : users){
-            userResponses.add(getResponse(user));
+            userResponses.add(new UserResponse(user));
         }
         return userResponses;
     }
@@ -63,26 +63,12 @@ public class UserServiceImpl implements UserService{
     @Override
     public UserResponse getResponseByUserId(Integer userId) {
         User user = this.getEntityByUserId(userId);
-        return getResponse(user);
-    }
-
-    //エンティティをレスポンスに変換する
-    private UserResponse getResponse(User user){
         return new UserResponse(user);
     }
 
-    @Override
-    public User getEntityByUserId(Integer userId) {
+    private User getEntityByUserId(Integer userId) {
         User user = userRepository.findById(userId)
-                .orElseThrow(()->new InvalidConfigurationPropertyValueException("User Not Found" ,userId , "User Not Found By UserID"));
-        return user;
-    }
-
-
-    @Override
-    public User getEntityByEmail(String email) {
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(()->new InvalidConfigurationPropertyValueException("User Not Found" ,email , "User Not Found By UserID"));
+                .orElseThrow(() -> new IllegalArgumentException());
         return user;
     }
 

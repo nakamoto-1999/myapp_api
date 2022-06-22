@@ -11,8 +11,6 @@ public interface UserService {
     void create(String name , String email , String password , Integer roleId);
     List<UserResponse> getAllResponses();
     UserResponse getResponseByUserId(Integer userId);
-    User getEntityByUserId(Integer userId);
-    User getEntityByEmail(String email);
     void update(Integer userId , String name , String email , String password);
     //ユーザーの無効化及び有効化
     void validate(Integer userId);

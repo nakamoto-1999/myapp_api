@@ -29,7 +29,7 @@ public class WebSecurityConfigurer extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers("/public/**").permitAll()
                 .antMatchers("/auth/admin/**").hasRole("ADMIN")
-                .anyRequest().authenticated()
+                .antMatchers("/auth/**").authenticated()
                 .and()
                 .addFilter(new MyAuthenticationFilter(authenticationManagerBean() , getPasswordEncoder()))
                 .addFilter(new MyAuthorizationFilter(authenticationManagerBean() , userDetailsService))
