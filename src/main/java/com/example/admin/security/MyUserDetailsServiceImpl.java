@@ -29,7 +29,7 @@ public class MyUserDetailsServiceImpl implements MyUserDetailsService {
     }
 
     @Override
-    public UserDetails loadUserByUserId(Integer userId) throws UsernameNotFoundException{
+    public UserDetails loadUserByUserId(Long userId) throws UsernameNotFoundException{
 
         if(userId == null){
             throw new UsernameNotFoundException(userId + "Not Found");

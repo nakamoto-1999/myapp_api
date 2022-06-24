@@ -4,6 +4,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 public interface MyUserDetails extends UserDetails {
 
-    Integer getUserId();
+    Long getUserId();
 
 }

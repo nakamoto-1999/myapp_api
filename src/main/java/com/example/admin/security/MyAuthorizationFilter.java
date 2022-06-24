@@ -54,7 +54,7 @@ public class MyAuthorizationFilter extends BasicAuthenticationFilter {
 
         //トークンによってユーザーが見つからなければnullを返す
         UserDetails userDetails = null;
-        Integer userId = Integer.parseInt(jwtUtil.extractSubject(jwt));
+        Long userId = Long.parseLong(jwtUtil.extractSubject(jwt));
         userDetails = this.userDetailsService.loadUserByUserId(userId);
         //System.out.println(userDetails.getUsername());
         if(userDetails == null){return null;}

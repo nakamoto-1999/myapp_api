@@ -1,4 +1,4 @@
-package com.example.admin.security;
+package com.example.admin.utility;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Component;
@@ -6,10 +6,10 @@ import org.springframework.stereotype.Component;
 import java.util.Collection;
 
 @Component
-public class SecurityUtilForControllerImpl implements SecurityUtilForController{
+public class SecurityUtilImpl implements SecurityUtil {
 
     @Override
-    public boolean isAuthIdEqualPathId(Integer authId, Integer pathId) {
+    public boolean isAuthIdEqualPathId(Long authId, Long pathId) {
         return authId == pathId;
     }
 

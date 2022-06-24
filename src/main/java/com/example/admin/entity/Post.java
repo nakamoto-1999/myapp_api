@@ -23,7 +23,7 @@ public class Post {
     @Column(name = "post_id")
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer postId;
+    private Long postId;
 
     @Column(name = "ip")
     private String ip;
@@ -40,7 +40,7 @@ public class Post {
     private String content;
 
     @Column(name = "is_valid")
-    private Boolean isValid;
+    private boolean isValid;
 
     @Column(name = "created_at")
     private Timestamp createdAt;

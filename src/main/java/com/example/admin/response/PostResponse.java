@@ -12,22 +12,22 @@ import java.util.Date;
 @NoArgsConstructor
 public class PostResponse {
 
-    private Integer postId;
+    private Long postId;
     private String ip;
     private UserResponse user;
     private String content;
-    private Boolean isValid;
-    private Timestamp created_at;
-    private Timestamp updated_at;
+    private boolean isValid;
+    private Timestamp createdAt;
+    private Timestamp updatedAt;
 
     public PostResponse(Post post){
         this.postId = post.getPostId();
         this.ip = post.getIp();
         this.user = new UserResponse(post.getUser());
         this.content = post.getContent();
-        this.isValid = post.getIsValid();
-        this.created_at = post.getCreatedAt();
-        this.updated_at = post.getUpdatedAt();
+        this.isValid = post.isValid();
+        this.createdAt = post.getCreatedAt();
+        this.updatedAt = post.getUpdatedAt();
     }
 
 }

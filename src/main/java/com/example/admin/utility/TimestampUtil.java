@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 import java.sql.Timestamp;
 
 @Component
-public class TimestampManager {
+public class TimestampUtil {
 
     public Timestamp getNow(){
         return new Timestamp(System.currentTimeMillis());

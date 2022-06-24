@@ -4,6 +4,7 @@ import com.example.admin.repository.PostRepository;
 import com.example.admin.service.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -23,25 +24,25 @@ public class PostController {
     }
 
     @GetMapping("/auth/admin/post/{postId}")
-    ResponseEntity<?> getByPostId(@PathVariable Integer postId){
+    ResponseEntity<?> getByPostId(@PathVariable Long postId){
         return ResponseEntity.ok(postService.getResponseByPostId(postId));
     }
 
     @PutMapping("/auth/admin/post/{postId}/validate")
-    ResponseEntity<?> validate(@PathVariable Integer postId){
-        postService.validate(postId);
+    ResponseEntity<?> validate(@PathVariable Long postId){
+        postService.validateByPostId(postId);
         return ResponseEntity.ok(null);
     }
 
     @PutMapping("/auth/admin/post/{postId}/invalidate")
-    ResponseEntity<?> invalidate(@PathVariable Integer postId){
-        postService.invalidate(postId);
+    ResponseEntity<?> invalidate(@PathVariable Long postId){
+        postService.invalidateByPostId(postId);
         return ResponseEntity.ok(null);
     }
 
     @DeleteMapping("/auth/admin/post/{postId}/delete")
-    ResponseEntity<?> delete(@PathVariable Integer postId){
-        postService.delete(postId);
+    ResponseEntity<?> delete(Authentication auth , @PathVariable Long postId){
+        postService.deleteByPostId(postId , auth);
         return ResponseEntity.ok(null);
     }
 

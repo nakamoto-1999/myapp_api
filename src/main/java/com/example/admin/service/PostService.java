@@ -2,19 +2,22 @@ package com.example.admin.service;
 
 import com.example.admin.entity.Post;
 import com.example.admin.entity.User;
+import com.example.admin.request.PostCreateRequest;
 import com.example.admin.response.PostResponse;
+import org.springframework.security.core.Authentication;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 public interface PostService {
 
-    void create(String ip ,User user, String content);
+    void createPost(Authentication auth , HttpServletRequest req , PostCreateRequest reqBody , Long threadId);
     List<PostResponse> getAllResponses();
-    PostResponse getResponseByPostId(Integer postId);
-    List<PostResponse> getAllResponsesByUserId(Integer userId);
-    void validate(Integer postId);
-    void invalidate(Integer postId);
-    void delete(Integer postId);
-    void deleteAllByUserId(Integer userId);
+    PostResponse getResponseByPostId(Long postId);
+    List<PostResponse> getAllResponsesByUserId(Long userId);
+    List<PostResponse> getAllResponseByThreadId(Long threadId);
+    void validateByPostId(Long postId);
+    void invalidateByPostId(Long postId);
+    void deleteByPostId(Long postId , Authentication auth);
 
 }

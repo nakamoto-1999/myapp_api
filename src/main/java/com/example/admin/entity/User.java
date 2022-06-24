@@ -27,7 +27,7 @@ public class User {
     @Column(name = "user_id")
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer userId;
+    private Long userId;
 
     @Column(name = "name")
     private String name;
@@ -39,7 +39,7 @@ public class User {
     private String password;
 
     @Column(name = "is_valid")
-    private Boolean isValid;
+    private boolean isValid;
 
     @OneToMany(mappedBy = "user" , cascade = CascadeType.ALL , orphanRemoval = true)
     @Column(insertable = false , updatable = false)

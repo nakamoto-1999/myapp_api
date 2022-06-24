@@ -27,9 +27,9 @@ public class WebSecurityConfigurer extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/public/**").permitAll()
                 .antMatchers("/auth/admin/**").hasRole("ADMIN")
                 .antMatchers("/auth/**").authenticated()
+                .anyRequest().permitAll()
                 .and()
                 .addFilter(new MyAuthenticationFilter(authenticationManagerBean() , getPasswordEncoder()))
                 .addFilter(new MyAuthorizationFilter(authenticationManagerBean() , userDetailsService))

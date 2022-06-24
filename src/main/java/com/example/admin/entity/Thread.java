@@ -16,9 +16,10 @@ import java.util.List;
 @Data
 public class Thread {
 
-    @Column(name = "thread_id")
     @Id
-    Integer threadId;
+    @Column(name = "thread_id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    Long threadId;
 
     @Column(name = "title")
     String title;
@@ -27,13 +28,19 @@ public class Thread {
     @JoinColumn(name = "user_id")
     User user;
 
-    @OneToMany(mappedBy = "thread" , cascade = CascadeType.ALL , orphanRemoval = true)
-    List<Post> posts;
+    @Column(name = "ip")
+    String ip;
+
+    @Column(name = "is_valid")
+    boolean isValid;
 
     @Column(name = "created_at")
     Timestamp createdAt;
 
     @Column(name = "updated_at")
     Timestamp updatedAt;
+
+    @OneToMany(mappedBy = "thread" , cascade = CascadeType.ALL , orphanRemoval = true)
+    List<Post> posts;
 
 }

@@ -1,20 +1,16 @@
 package com.example.admin.controller;
 
-import com.example.admin.repository.UserRepository;
 import com.example.admin.request.UserCreateUpdateRequest;
 import com.example.admin.response.UserResponse;
-import com.example.admin.security.MyUserDetails;
-import com.example.admin.security.SecurityUtilForController;
+import com.example.admin.service.ThreadService;
+import com.example.admin.utility.SecurityUtil;
 import com.example.admin.service.PostService;
 import com.example.admin.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
-import javax.persistence.criteria.CriteriaBuilder;
 
 @RestController
 @CrossOrigin("http://localhost:3000")
@@ -27,19 +23,20 @@ public class UserController {
     PostService postService;
 
     @Autowired
-    SecurityUtilForController securityUtil;
+    ThreadService threadService;
 
-    @PostMapping("/public/user/create")
-    public ResponseEntity<?> create(@Validated @RequestBody UserCreateUpdateRequest request){
-        //一般ユーザーの場合はroleIdが1
-        userService.create(request.getName() , request.getEmail() , request.getPassword() , 1);
+    @Autowired
+    SecurityUtil securityUtil;
+
+    @PostMapping("/user/create")
+    public ResponseEntity<?> createGeneralUser(@Validated @RequestBody UserCreateUpdateRequest request){
+        userService.createGeneralUser(request);
         return ResponseEntity.ok(null);
     }
 
     @PostMapping("/auth/admin/user/create")
-    public ResponseEntity<?> createAdmin(@Validated @RequestBody UserCreateUpdateRequest request){
-        //一般ユーザーの場合はroleIdが1
-        userService.create(request.getName() , request.getEmail() , request.getPassword() , 2);
+    public ResponseEntity<?> createAdminUser(@Validated @RequestBody UserCreateUpdateRequest request){
+        userService.createAdminUser(request);
         return ResponseEntity.ok(null);
     }
 
@@ -49,61 +46,35 @@ public class UserController {
         return ResponseEntity.ok(userService.getAllResponses());
     }
 
-    @GetMapping("/public/user/{userId}")
-    public ResponseEntity<?> getByUserId(@PathVariable Integer userId){
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<?> getByUserId(@PathVariable Long userId){
         UserResponse response = userService.getResponseByUserId(userId);
+        response.setThreads(threadService.getAllResponseByUserId(userId));
+        response.setPosts(postService.getAllResponsesByUserId(userId));
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/public/user/{userId}/posts")
-    public ResponseEntity<?> getPostsByUserId(@PathVariable Integer userId){
-        //ユーザーの投稿も一括で取得する
-        return ResponseEntity.ok(
-                postService.getAllResponsesByUserId(userId)
-        );
-    }
-
     @PutMapping("/auth/user/{userId}/update")
-    public ResponseEntity<?> updateByUserId(@PathVariable Integer userId ,@Validated @RequestBody UserCreateUpdateRequest request, Authentication auth){
-        MyUserDetails userDetails = null;
-        if(auth != null){
-            userDetails = (MyUserDetails) auth.getPrincipal();
-        };
-        //リクエストされたUserIdが認可を受けたユーザーと一致しないアクセス拒否
-        if(userDetails != null){
-            if(!securityUtil.isAuthIdEqualPathId(userDetails.getUserId() , userId)){
-                throw new AccessDeniedException("");
-            }
-        }
-        userService.update(userId , request.getName() , request.getEmail() ,request.getPassword());
+    public ResponseEntity<?> updateByUserId(@PathVariable Long userId ,@Validated @RequestBody UserCreateUpdateRequest request, Authentication auth){
+        userService.updateByUserId(userId , auth , request);
         return ResponseEntity.ok(null);
     }
 
     @PutMapping("/auth/admin/user/{userId}/validate")
-    public ResponseEntity<?> validate(@PathVariable Integer userId){
-        userService.validate(userId);
+    public ResponseEntity<?> validateByUserId(@PathVariable Long userId){
+        userService.validateByUserId(userId);
         return ResponseEntity.ok(null);
     }
 
     @PutMapping("/auth/admin/user/{userId}/invalidate")
-    public ResponseEntity<?> invalidate(@PathVariable Integer userId){
-        userService.invalidate(userId);
+    public ResponseEntity<?> invalidateByUserId(@PathVariable Long userId){
+        userService.invalidateByUserId(userId);
         return ResponseEntity.ok(null);
     }
 
     @DeleteMapping("/auth/user/{userId}/delete")
-    public ResponseEntity<?> deleteByUserId(@PathVariable Integer userId , Authentication auth){
-        MyUserDetails userDetails = null;
-        if(auth != null){
-            userDetails = (MyUserDetails) auth.getPrincipal();
-        };
-        //リクエストされたUserIdが一致せず、かつADMIN権限を持っていない場合はアクセス拒否
-        if(userDetails != null){
-            if(!securityUtil.isAuthIdEqualPathId(userDetails.getUserId() , userId) && !securityUtil.isAdmin(userDetails.getAuthorities())){
-                throw new AccessDeniedException("");
-            }
-        }
-        userService.delete(userId);
+    public ResponseEntity<?> deleteByUserId(@PathVariable Long userId , Authentication auth){
+        userService.deleteByUserId(userId , auth);
         return ResponseEntity.ok(null);
     }
 

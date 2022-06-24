@@ -3,13 +3,12 @@ package com.example.admin.request;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.stereotype.Component;
 
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
-public class PostCreateRequest {
+@AllArgsConstructor
+public class ThreadCreateRequest {
 
-    private String content;
+    private String title;
 
 }

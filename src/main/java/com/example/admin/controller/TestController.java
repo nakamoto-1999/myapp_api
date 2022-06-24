@@ -10,12 +10,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @CrossOrigin("http://localhost:3000")
 public class TestController {
-    @GetMapping("/public/test")
-    public ResponseEntity<?> test(Authentication auth){
-        MyUserDetails userDetails = null;
-        if(auth != null){
-            userDetails = (MyUserDetails) auth.getPrincipal();
-        };
-        return ResponseEntity.ok(userDetails);
+    @GetMapping("/test")
+    public ResponseEntity<?> test(){
+        return ResponseEntity.ok(null);
     }
 }

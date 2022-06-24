@@ -15,7 +15,7 @@ public class MyUserDetailsImpl implements MyUserDetails {
         this.user = user;
     }
 
-    public Integer getUserId(){
+    public Long getUserId(){
         return this.user.getUserId();
     }
 
@@ -51,6 +51,6 @@ public class MyUserDetailsImpl implements MyUserDetails {
 
     @Override
     public boolean isEnabled() {
-        return true;
+        return user.isValid();
     }
 }

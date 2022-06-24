@@ -28,7 +28,7 @@ public class MyAuthenticationFilter extends UsernamePasswordAuthenticationFilter
         this.authenticationManager = authenticationManager;
         this.passwordEncoder = passwordEncoder;
 
-        this.setRequiresAuthenticationRequestMatcher(new AntPathRequestMatcher("/public/login" , "POST"));
+        this.setRequiresAuthenticationRequestMatcher(new AntPathRequestMatcher("/login" , "POST"));
 
         this.setUsernameParameter("email");
         this.setPasswordParameter("password");
