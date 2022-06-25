@@ -3,6 +3,7 @@ package com.example.admin.security;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
@@ -13,7 +14,8 @@ import java.util.function.Function;
 
 public class JwtUtil {
 
-    private String SECRET_KEY = "secret";
+    @Value("${jwt.secret-key}")
+    private String SECRET_KEY;
 
     public String extractTokenFromRequest(HttpServletRequest request){
         String authHeader = request.getHeader("Authorization");
