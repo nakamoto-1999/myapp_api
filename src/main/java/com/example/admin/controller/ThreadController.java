@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 
 @RestController
-@CrossOrigin("http/localhost:3000")
 public class ThreadController {
 
     @Autowired
@@ -25,8 +24,8 @@ public class ThreadController {
 
     @PostMapping("/auth/thread/create")
     ResponseEntity<?> createThread(HttpServletRequest req, Authentication auth , @Validated @RequestBody ThreadCreateRequest reqBody){
-        threadService.createThread(auth , req , reqBody);
-        return ResponseEntity.ok(null);
+        ThreadResponse response = threadService.createThread(auth , req , reqBody);
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping("/auth/thread/{threadId}/post/create")
@@ -39,7 +38,7 @@ public class ThreadController {
 
     }
 
-    @GetMapping("/thread/all")
+    @GetMapping("/thread")
     ResponseEntity<?> getAllThreads(){
         return ResponseEntity.ok(threadService.getAllResponses());
     }

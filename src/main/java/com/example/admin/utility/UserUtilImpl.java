@@ -6,11 +6,11 @@ import org.springframework.stereotype.Component;
 import java.util.Collection;
 
 @Component
-public class SecurityUtilImpl implements SecurityUtil {
+public class UserUtilImpl implements UserUtil {
 
     @Override
-    public boolean isAuthIdEqualPathId(Long authId, Long pathId) {
-        return authId == pathId;
+    public boolean isAuthIdEqualPathId(Long authId, Long userId) {
+        return authId == userId;
     }
 
     @Override

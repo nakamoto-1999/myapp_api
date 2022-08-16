@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.*;
 
 
 @RestController
-@CrossOrigin("http://localhost:3000")
 public class PostController {
 
     @Autowired
@@ -18,7 +17,7 @@ public class PostController {
     @Autowired
     PostService postService;
 
-    @GetMapping("/auth/admin/post/all")
+    @GetMapping("/auth/admin/post")
     ResponseEntity<?> getAll(){
         return ResponseEntity.ok(postService.getAllResponses());
     }
@@ -40,7 +39,7 @@ public class PostController {
         return ResponseEntity.ok(null);
     }
 
-    @DeleteMapping("/auth/admin/post/{postId}/delete")
+    @DeleteMapping("/auth/post/{postId}/delete")
     ResponseEntity<?> delete(Authentication auth , @PathVariable Long postId){
         postService.deleteByPostId(postId , auth);
         return ResponseEntity.ok(null);

@@ -8,8 +8,9 @@ import com.example.admin.repository.ThreadRepository;
 import com.example.admin.request.ThreadCreateRequest;
 import com.example.admin.response.ThreadResponse;
 import com.example.admin.security.MyUserDetails;
-import com.example.admin.utility.SecurityUtil;
 import com.example.admin.utility.TimestampUtil;
+import com.example.admin.utility.UserUtil;
+import com.example.admin.utility.TimestampUtilImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
@@ -29,7 +30,7 @@ public class ThreadServiceImpl implements ThreadService{
     TimestampUtil timestampUtil;
 
     @Autowired
-    SecurityUtil securityUtil;
+    UserUtil securityUtil;
 
     @Autowired
     ThreadLogic threadLogic;
@@ -38,12 +39,14 @@ public class ThreadServiceImpl implements ThreadService{
     UserLogic userLogic;
 
     @Override
-    public void createThread(Authentication auth, HttpServletRequest req, ThreadCreateRequest reqBody) {
+    public ThreadResponse createThread(Authentication auth, HttpServletRequest req, ThreadCreateRequest reqBody) {
 
-        if(auth == null ||req == null || reqBody == null ){return;}
+        if(auth == null ||req == null || reqBody == null ){return new ThreadResponse();}
         MyUserDetails userDetails = (MyUserDetails) auth.getPrincipal();
 
-        if(userDetails == null){return;}
+        if(userDetails == null){return new ThreadResponse();}
+        //許可されていないユーザーの場合は、アクセス拒否
+        if(!userDetails.isPermitted()){throw new AccessDeniedException("");}
         Thread thread = new Thread();
         thread.setTitle(reqBody.getTitle());
         User user = userLogic.getEntitiyByUserId(userDetails.getUserId());
@@ -51,8 +54,9 @@ public class ThreadServiceImpl implements ThreadService{
         thread.setIp(req.getRemoteAddr());
         thread.setValid(true);
         thread.setCreatedAt(timestampUtil.getNow());
-        threadRepository.save(thread);
+        Thread createdThread = threadRepository.save(thread);
 
+        return new ThreadResponse(createdThread);
     }
 
     @Override
@@ -110,10 +114,11 @@ public class ThreadServiceImpl implements ThreadService{
         MyUserDetails userDetails = (MyUserDetails)auth.getPrincipal();
         Thread thread = threadLogic.getEntityByThreadId(threadId);
         if(!securityUtil.isAuthIdEqualPathId(userDetails.getUserId() , thread.getUser().getUserId())
-                && securityUtil.isAdmin(userDetails.getAuthorities()))
+                && !securityUtil.isAdmin(userDetails.getAuthorities()))
         {
             throw new AccessDeniedException("");
         }
-        threadRepository.delete(thread);
+        thread.setValid(false);
+        threadRepository.save(thread);
     }
 }

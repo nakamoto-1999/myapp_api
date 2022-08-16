@@ -21,13 +21,19 @@ public class PostResponse {
     private Timestamp updatedAt;
 
     public PostResponse(Post post){
-        this.postId = post.getPostId();
-        this.ip = post.getIp();
-        this.user = new UserResponse(post.getUser());
-        this.content = post.getContent();
-        this.isValid = post.isValid();
-        this.createdAt = post.getCreatedAt();
-        this.updatedAt = post.getUpdatedAt();
+        //投稿そのものが無効、または書き込んだユーザーが無効の場合、それをフロント側に知らせるフラグ以外はレスポンスを返さない
+        if(post.isValid() && post.getUser().isValid()) {
+            postId = post.getPostId();
+            ip = post.getIp();
+            user = new UserResponse(post.getUser());
+            isValid = true;
+            content = post.getContent();
+            createdAt = post.getCreatedAt();
+            updatedAt = post.getUpdatedAt();
+        }
+        else{
+            isValid = false;
+        }
     }
 
 }

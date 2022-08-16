@@ -19,6 +19,6 @@ public class Role {
     Long roleId;
 
     @Column(name = "name")
-    String roleName;
+    String name;
 
 }

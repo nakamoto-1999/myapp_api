@@ -15,13 +15,19 @@ public class MyUserDetailsImpl implements MyUserDetails {
         this.user = user;
     }
 
+    @Override
     public Long getUserId(){
         return this.user.getUserId();
     }
 
     @Override
+    public boolean isPermitted(){
+        return user.isPermitted();
+    }
+
+    @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return AuthorityUtils.createAuthorityList("ROLE_" + this.user.getRole().getRoleName());
+        return AuthorityUtils.createAuthorityList("ROLE_" + this.user.getRole().getName());
     }
 
     @Override
@@ -36,7 +42,7 @@ public class MyUserDetailsImpl implements MyUserDetails {
 
     @Override
     public boolean isAccountNonExpired() {
-        return true;
+        return user.isValid();
     }
 
     @Override
@@ -51,6 +57,6 @@ public class MyUserDetailsImpl implements MyUserDetails {
 
     @Override
     public boolean isEnabled() {
-        return user.isValid();
+        return true;
     }
 }

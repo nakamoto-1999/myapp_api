@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface ThreadService {
 
-    void createThread(Authentication auth , HttpServletRequest req, ThreadCreateRequest reqBody);
+    ThreadResponse createThread(Authentication auth , HttpServletRequest req, ThreadCreateRequest reqBody);
     List<ThreadResponse> getAllResponses();
     List<ThreadResponse> getAllResponseByUserId(Long userId);
     ThreadResponse getResponseByThreadId(Long threadId);

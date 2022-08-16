@@ -10,14 +10,14 @@ import java.util.List;
 
 public interface UserService {
 
-    void createGeneralUser(UserCreateUpdateRequest request);
-    void createAdminUser(UserCreateUpdateRequest request);
+    UserResponse createGeneralUser(UserCreateUpdateRequest request);
+    UserResponse createAdminUser(UserCreateUpdateRequest request);
     List<UserResponse> getAllResponses();
     UserResponse getResponseByUserId(Long userId);
+    UserResponse getResponseByAuth(Authentication auth);
     void updateByUserId(Long userId ,Authentication auth ,UserCreateUpdateRequest request);
     //ユーザーの無効化及び有効化
-    void validateByUserId(Long userId);
-    void invalidateByUserId(Long userId);
+    void switchPermitByUserId(Long userId);
     void deleteByUserId(Long userId , Authentication auth);
 
 }

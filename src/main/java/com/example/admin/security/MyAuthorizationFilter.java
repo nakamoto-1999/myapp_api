@@ -10,6 +10,7 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -28,8 +29,19 @@ public class MyAuthorizationFilter extends BasicAuthenticationFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
 
-        final String authToken = request.getHeader("Authorization");
-        if(authToken == null || !authToken.startsWith("Bearer ")){
+        String authToken = null;
+
+        Cookie[] cookies = request.getCookies();
+        if(cookies != null) {
+            System.out.println(cookies);
+            for (Cookie c : cookies) {
+                if (c.getName().equals("Authorization")) {
+                    authToken = c.getValue();
+                }
+            }
+        }
+
+        if(authToken == null || !authToken.startsWith("Bearer-")){
             chain.doFilter(request,response);
             return;
         }
@@ -49,7 +61,7 @@ public class MyAuthorizationFilter extends BasicAuthenticationFilter {
         JwtUtil jwtUtil = new JwtUtil();
 
         //トークンが期限切れならばnullを返す
-        final String jwt = authToken.replace("Bearer " , "");
+        final String jwt = authToken.replace("Bearer-" , "");
         if(jwtUtil.isTokenExpired(jwt)){return null;}
 
         //トークンによってユーザーが見つからなければnullを返す

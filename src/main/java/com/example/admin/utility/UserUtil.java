@@ -4,7 +4,7 @@ import org.springframework.security.core.GrantedAuthority;
 
 import java.util.Collection;
 
-public interface SecurityUtil {
-    boolean isAuthIdEqualPathId(Long authId , Long pathId);
+public interface UserUtil {
+    boolean isAuthIdEqualPathId(Long authId , Long userId);
     boolean isAdmin(Collection<? extends GrantedAuthority> authorities);
 }

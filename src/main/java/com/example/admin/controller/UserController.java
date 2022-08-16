@@ -3,7 +3,7 @@ package com.example.admin.controller;
 import com.example.admin.request.UserCreateUpdateRequest;
 import com.example.admin.response.UserResponse;
 import com.example.admin.service.ThreadService;
-import com.example.admin.utility.SecurityUtil;
+import com.example.admin.utility.UserUtil;
 import com.example.admin.service.PostService;
 import com.example.admin.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +13,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@CrossOrigin("http://localhost:3000")
 public class UserController {
 
     @Autowired
@@ -26,7 +25,7 @@ public class UserController {
     ThreadService threadService;
 
     @Autowired
-    SecurityUtil securityUtil;
+    UserUtil securityUtil;
 
     @PostMapping("/user/create")
     public ResponseEntity<?> createGeneralUser(@Validated @RequestBody UserCreateUpdateRequest request){
@@ -40,18 +39,21 @@ public class UserController {
         return ResponseEntity.ok(null);
     }
 
-    @GetMapping("/auth/admin/user/all")
+    @GetMapping("/auth/admin/user")
     //一般ユーザーの場合はroleIdが2
-    public ResponseEntity<?> getAll(){
+    public ResponseEntity<?> getAllUsers(){
         return ResponseEntity.ok(userService.getAllResponses());
     }
 
     @GetMapping("/user/{userId}")
-    public ResponseEntity<?> getByUserId(@PathVariable Long userId){
+    public ResponseEntity<?> getUserByUserId(@PathVariable Long userId){
         UserResponse response = userService.getResponseByUserId(userId);
-        response.setThreads(threadService.getAllResponseByUserId(userId));
-        response.setPosts(postService.getAllResponsesByUserId(userId));
         return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("auth/login/user")
+    public ResponseEntity<?> getUserByAuth(Authentication auth){
+        return ResponseEntity.ok(userService.getResponseByAuth(auth));
     }
 
     @PutMapping("/auth/user/{userId}/update")
@@ -60,15 +62,9 @@ public class UserController {
         return ResponseEntity.ok(null);
     }
 
-    @PutMapping("/auth/admin/user/{userId}/validate")
+    @PutMapping("/auth/admin/user/{userId}/switch-permit")
     public ResponseEntity<?> validateByUserId(@PathVariable Long userId){
-        userService.validateByUserId(userId);
-        return ResponseEntity.ok(null);
-    }
-
-    @PutMapping("/auth/admin/user/{userId}/invalidate")
-    public ResponseEntity<?> invalidateByUserId(@PathVariable Long userId){
-        userService.invalidateByUserId(userId);
+        userService.switchPermitByUserId(userId);
         return ResponseEntity.ok(null);
     }
 

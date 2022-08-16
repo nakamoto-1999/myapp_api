@@ -2,6 +2,7 @@ package com.example.admin.security;
 
 import com.example.admin.request.UserAuthForm;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.http.ResponseCookie;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -12,10 +13,13 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.time.Duration;
 import java.util.ArrayList;
+import java.util.Date;
 
 
 public class MyAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
@@ -27,7 +31,7 @@ public class MyAuthenticationFilter extends UsernamePasswordAuthenticationFilter
 
         this.authenticationManager = authenticationManager;
         this.passwordEncoder = passwordEncoder;
-
+        //問題の箇所
         this.setRequiresAuthenticationRequestMatcher(new AntPathRequestMatcher("/login" , "POST"));
 
         this.setUsernameParameter("email");
@@ -57,12 +61,23 @@ public class MyAuthenticationFilter extends UsernamePasswordAuthenticationFilter
         MyUserDetails userDetails = (MyUserDetails)authResult.getPrincipal();
 
         //主キーからJWTを生成
+        //トークンの期限（秒）
+        Long duraSec = 60 * 60 * 24L ;
         JwtUtil jwtUtil = new JwtUtil();
         String jwt = jwtUtil.generateToken(
-                userDetails.getUserId().toString()
+                userDetails.getUserId().toString(),
+                duraSec
         );
 
-        response.addHeader("AuthenticationToken" ,"Bearer " + jwt);
+        ResponseCookie cookie = ResponseCookie
+                .from("Authorization" , "Bearer-" + jwt)
+                .domain("localhost")
+                .maxAge(duraSec)
+                .httpOnly(true)
+                .secure(true)
+                .sameSite("None")
+                .build();
+        response.addHeader("Set-Cookie" , cookie.toString());
 
     }
 }

@@ -9,12 +9,12 @@ import com.example.admin.repository.PostRepository;
 import com.example.admin.request.PostCreateRequest;
 import com.example.admin.response.PostResponse;
 import com.example.admin.security.MyUserDetails;
-import com.example.admin.utility.SecurityUtil;
 import com.example.admin.utility.TimestampUtil;
+import com.example.admin.utility.UserUtil;
+import com.example.admin.utility.TimestampUtilImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,10 +30,10 @@ public class PostServiceImpl implements PostService{
     PostRepository postRepository;
 
     @Autowired
-    TimestampUtil timestampManager;
+    TimestampUtil timestampUtil;
 
     @Autowired
-    SecurityUtil securityUtil;
+    UserUtil securityUtil;
 
     @Autowired
     UserLogic userLogic;
@@ -48,6 +48,8 @@ public class PostServiceImpl implements PostService{
         MyUserDetails userDetails = (MyUserDetails)auth.getPrincipal();
 
         if(userDetails == null){return;}
+        //許可されていないユーザーの場合は、アクセス拒否
+        if(!userDetails.isPermitted()){throw new AccessDeniedException("");}
         Post post = new Post();
         User user = userLogic.getEntitiyByUserId(userDetails.getUserId());
         post.setUser(user);
@@ -56,7 +58,7 @@ public class PostServiceImpl implements PostService{
         post.setIp(req.getRemoteAddr());
         post.setContent(reqBody.getContent());
         post.setValid(true);
-        post.setCreatedAt(timestampManager.getNow());
+        post.setCreatedAt(timestampUtil.getNow());
         postRepository.save(post);
 
     }
@@ -119,17 +121,18 @@ public class PostServiceImpl implements PostService{
         Post post = this.getEntityByPostId(postId);
         if(!post.isValid()) {
             post.setValid(true);
-            post.setUpdatedAt(timestampManager.getNow());
+            post.setUpdatedAt(timestampUtil.getNow());
             postRepository.save(post);
         }
     }
 
     @Override
     public void invalidateByPostId(Long postId) {
+
         Post post = this.getEntityByPostId(postId);
         if(post.isValid()) {
             post.setValid(false);
-            post.setUpdatedAt(timestampManager.getNow());
+            post.setUpdatedAt(timestampUtil.getNow());
             postRepository.save(post);
         }
     }
@@ -145,7 +148,8 @@ public class PostServiceImpl implements PostService{
         ){
             throw new AccessDeniedException("");
         }
-        postRepository.delete(post);
+        post.setValid(false);
+        postRepository.save(post);
     }
 
 }
