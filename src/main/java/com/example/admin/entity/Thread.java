@@ -10,14 +10,14 @@ import java.sql.Timestamp;
 import java.util.List;
 
 @Entity
-@Table(name = "thread")
+@Table(name = "thread" , schema = "public")
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
 public class Thread {
 
     @Id
-    @Column(name = "thread_id")
+    @Column(name = "thread_id" )
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long threadId;
 

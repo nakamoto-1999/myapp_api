@@ -7,10 +7,12 @@ import com.example.admin.repository.RoleRepository;
 import com.example.admin.repository.UserRepository;
 import com.example.admin.request.UserCreateUpdateRequest;
 import com.example.admin.response.UserResponse;
+import com.example.admin.response.UserResponseAuth;
 import com.example.admin.security.MyUserDetails;
 import com.example.admin.utility.TimestampUtil;
 import com.example.admin.utility.UserUtil;
 import com.example.admin.utility.TimestampUtilImpl;
+import com.fasterxml.jackson.databind.ObjectReader;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
@@ -50,6 +52,7 @@ public class UserServiceImpl implements UserService{
         user.setEmail(email);
         user.setPassword(this.passwordEncorder.encode(password));
         user.setPermitted(true);
+        user.setValid(true);
         Role role = roleRepository.getById(roleId);
         user.setRole(role);
         user.setCreatedAt(timestampUtil.getNow());
@@ -76,7 +79,7 @@ public class UserServiceImpl implements UserService{
     @Override
     public List<UserResponse> getAllResponses() {
 
-        List<User> users = userRepository.findAll();
+        List<User> users = userRepository.findAllByOrderByUserId();
         List<UserResponse> userResponses = new ArrayList<>();
         users.forEach((User user)->{
             userResponses.add(new UserResponse(user));
@@ -86,6 +89,14 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
+    //認証を受けたユーザー用のデータレスポンス
+    public UserResponseAuth getResponseAuthByUserId(Long userId) {
+        User user = this.userLogic.getEntitiyByUserId(userId);
+        return new UserResponseAuth(user);
+    }
+
+    @Override
+    //一般ユーザー用のデータレスポンス
     public UserResponse getResponseByUserId(Long userId) {
         User user = this.userLogic.getEntitiyByUserId(userId);
         return new UserResponse(user);
@@ -94,7 +105,8 @@ public class UserServiceImpl implements UserService{
     @Override
     public UserResponse getResponseByAuth(Authentication auth) {
         if(auth == null){return new UserResponse();}
-        MyUserDetails userDetails = (MyUserDetails)auth.getPrincipal();
+        MyUserDetails userDetails =
+                auth.getPrincipal() instanceof MyUserDetails ? (MyUserDetails) auth.getPrincipal() :null;
         if(userDetails == null){return new UserResponse();}
         User user = userLogic.getEntitiyByUserId(userDetails.getUserId());
         return new UserResponse(user);
@@ -103,7 +115,8 @@ public class UserServiceImpl implements UserService{
     @Override
     public void updateByUserId(Long userId , Authentication auth , UserCreateUpdateRequest request ) {
         if(auth == null || request == null){return;}
-        MyUserDetails userDetails = (MyUserDetails) auth.getPrincipal();
+        MyUserDetails userDetails =
+                auth.getPrincipal() instanceof MyUserDetails ? (MyUserDetails) auth.getPrincipal() :null;
 
         //認証を受けたユーザーと取得したユーザーが一致しない場合は、アクセス拒否
         if(userDetails == null){return;}
@@ -133,7 +146,8 @@ public class UserServiceImpl implements UserService{
     public void deleteByUserId(Long userId , Authentication auth) {
 
         if(auth == null)return;
-        MyUserDetails userDetails = (MyUserDetails) auth.getPrincipal();
+        MyUserDetails userDetails =
+                auth.getPrincipal() instanceof MyUserDetails ? (MyUserDetails) auth.getPrincipal() :null;
 
         //ユーザーの取得
         User user = this.userLogic.getEntitiyByUserId(userId);
@@ -148,4 +162,19 @@ public class UserServiceImpl implements UserService{
         userRepository.save(user);
     }
 
+    @Override
+    public boolean isExistEmail(Authentication auth , String email) {
+        if(auth != null) {
+            MyUserDetails userDetails =
+                    auth.getPrincipal() instanceof MyUserDetails ? (MyUserDetails) auth.getPrincipal() :null;
+            //認証を受けたユーザーが、全く同じメールアドレスを登録しようとしているときは、false
+            if(userDetails != null && userDetails.getEmail().equals(email)){
+                return false;
+            }
+        }
+        //認証を受けていない、または認証を受けているが、既存のメールアドレスと異なるものを登録しようとしているとき
+        //登録しようとしているメールアドレスが、すでに存在するならば、true
+        User user = userRepository.findByEmail(email).orElse(null);
+        return user != null;
+    }
 }

@@ -45,7 +45,8 @@ public class PostServiceImpl implements PostService{
     public void createPost(Authentication auth, HttpServletRequest req, PostCreateRequest reqBody , Long threadId) {
 
         if(auth == null || req == null || reqBody == null){return;}
-        MyUserDetails userDetails = (MyUserDetails)auth.getPrincipal();
+        MyUserDetails userDetails =
+                auth.getPrincipal() instanceof MyUserDetails ? (MyUserDetails) auth.getPrincipal() :null;
 
         if(userDetails == null){return;}
         //許可されていないユーザーの場合は、アクセス拒否
@@ -79,7 +80,7 @@ public class PostServiceImpl implements PostService{
     @Override
     public List<PostResponse> getAllResponsesByUserId(Long userId) {
 
-        List<Post> posts = postRepository.findAllByUserId(userId);
+        List<Post> posts = postRepository.findAllByUserIdOrderByPostId(userId);
         List<PostResponse> postResponses = new ArrayList<>();
         posts.forEach((Post post)->{
             postResponses.add(new PostResponse(post));
@@ -90,7 +91,7 @@ public class PostServiceImpl implements PostService{
 
     @Override
     public List<PostResponse> getAllResponseByThreadId(Long threadId) {
-        List<Post> posts = postRepository.findAllByThreadId(threadId);
+        List<Post> posts = postRepository.findAllByThreadIdOrderByPostId(threadId);
         List<PostResponse> postResponses = new ArrayList<>();
         posts.forEach((Post post)->{
             postResponses.add(new PostResponse(post));
@@ -139,12 +140,18 @@ public class PostServiceImpl implements PostService{
 
     @Override
     public void deleteByPostId(Long postId , Authentication auth) {
-        if(auth == null){return;}
-        MyUserDetails myUserDetails = (MyUserDetails) auth.getPrincipal();
+
+        //IDからpostを取得
         Post post = this.getEntityByPostId(postId);
+
+        if(auth == null)return;
+        MyUserDetails userDetails =
+                auth.getPrincipal() instanceof MyUserDetails ? (MyUserDetails) auth.getPrincipal() :null;
+
         //認証を受けたユーザーが、Postを投稿したユーザーと一致せず、かつユーザーがADMINではない場合はアクセスを拒否
-        if(!securityUtil.isAuthIdEqualPathId(myUserDetails.getUserId() , post.getUser().getUserId())
-                && !securityUtil.isAdmin(myUserDetails.getAuthorities())
+        if(userDetails == null)return;
+        if(!securityUtil.isAuthIdEqualPathId(userDetails.getUserId() , post.getUser().getUserId())
+                && !securityUtil.isAdmin(userDetails.getAuthorities())
         ){
             throw new AccessDeniedException("");
         }

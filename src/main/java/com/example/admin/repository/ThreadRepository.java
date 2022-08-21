@@ -8,7 +8,9 @@ import java.util.List;
 
 public interface ThreadRepository extends JpaRepository<Thread, Long> {
 
-    @Query("SELECT DISTINCT th FROM Thread th WHERE th.user.userId = ?1")
-    List<Thread> findAllByUserId(Long userId);
+    List<Thread> findAllByOrderByThreadId();
+
+    @Query("SELECT DISTINCT th FROM Thread th WHERE th.user.userId = ?1 ORDER BY th.threadId")
+    List<Thread> findAllByUserIdOrderByThreadId(Long userId);
 
 }

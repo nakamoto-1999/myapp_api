@@ -7,6 +7,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
+import org.springframework.web.client.HttpClientErrorException;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -68,11 +69,11 @@ public class MyAuthorizationFilter extends BasicAuthenticationFilter {
         UserDetails userDetails = null;
         Long userId = Long.parseLong(jwtUtil.extractSubject(jwt));
         userDetails = this.userDetailsService.loadUserByUserId(userId);
+
         //System.out.println(userDetails.getUsername());
         if(userDetails == null){return null;}
 
         return new UsernamePasswordAuthenticationToken(userDetails , null , userDetails.getAuthorities());
     }
-
 
 }

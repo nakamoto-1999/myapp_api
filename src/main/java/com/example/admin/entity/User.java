@@ -17,7 +17,7 @@ import java.util.Date;
 import java.util.List;
 
 @Entity
-@Table(name = "user")
+@Table(name = "user" , schema = "public")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

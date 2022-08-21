@@ -14,7 +14,7 @@ import java.util.Date;
 
 
 @Entity
-@Table(name = "post")
+@Table(name = "post" , schema = "public")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

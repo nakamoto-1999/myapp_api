@@ -42,7 +42,8 @@ public class ThreadServiceImpl implements ThreadService{
     public ThreadResponse createThread(Authentication auth, HttpServletRequest req, ThreadCreateRequest reqBody) {
 
         if(auth == null ||req == null || reqBody == null ){return new ThreadResponse();}
-        MyUserDetails userDetails = (MyUserDetails) auth.getPrincipal();
+        MyUserDetails userDetails =
+                auth.getPrincipal() instanceof MyUserDetails ? (MyUserDetails) auth.getPrincipal() :null;
 
         if(userDetails == null){return new ThreadResponse();}
         //許可されていないユーザーの場合は、アクセス拒否
@@ -61,7 +62,7 @@ public class ThreadServiceImpl implements ThreadService{
 
     @Override
     public List<ThreadResponse> getAllResponses() {
-        List<Thread> threads = threadRepository.findAll();
+        List<Thread> threads = threadRepository.findAllByOrderByThreadId();
         List<ThreadResponse> threadResponses = new ArrayList<>();
         threads.forEach((Thread thread)->{
             threadResponses.add(new ThreadResponse(thread));
@@ -71,7 +72,7 @@ public class ThreadServiceImpl implements ThreadService{
 
     @Override
     public List<ThreadResponse> getAllResponseByUserId(Long userId) {
-        List<Thread> threads = threadRepository.findAllByUserId(userId);
+        List<Thread> threads = threadRepository.findAllByUserIdOrderByThreadId(userId);
         List<ThreadResponse> threadResponses = new ArrayList<>();
         threads.forEach((Thread thread)->{
             threadResponses.add(new ThreadResponse(thread));
@@ -109,10 +110,17 @@ public class ThreadServiceImpl implements ThreadService{
 
     @Override
     public void deleteByThreadId(Long threadId , Authentication auth) {
+
+        //IDからスレッドを取得
+        Thread thread = threadLogic.getEntityByThreadId(threadId);
+
         //スレッドを立てたユーザーと、認証を受けたユーザーが一致しなければアクセス拒否
         if(auth == null){return;}
-        MyUserDetails userDetails = (MyUserDetails)auth.getPrincipal();
-        Thread thread = threadLogic.getEntityByThreadId(threadId);
+        MyUserDetails userDetails =
+                auth.getPrincipal() instanceof MyUserDetails ? (MyUserDetails) auth.getPrincipal() :null;
+
+        if(userDetails == null)return;
+
         if(!securityUtil.isAuthIdEqualPathId(userDetails.getUserId() , thread.getUser().getUserId())
                 && !securityUtil.isAdmin(userDetails.getAuthorities()))
         {

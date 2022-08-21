@@ -2,6 +2,7 @@ package com.example.admin.controller;
 
 import com.example.admin.request.UserCreateUpdateRequest;
 import com.example.admin.response.UserResponse;
+import com.example.admin.response.UserResponseAuth;
 import com.example.admin.service.ThreadService;
 import com.example.admin.utility.UserUtil;
 import com.example.admin.service.PostService;
@@ -51,6 +52,12 @@ public class UserController {
         return ResponseEntity.ok(response);
     }
 
+    @GetMapping("/auth/user/{userId}")
+    public ResponseEntity<?> getUserByUserIdForAuth(@PathVariable Long userId){
+        UserResponseAuth response = userService.getResponseAuthByUserId(userId);
+        return ResponseEntity.ok(response);
+    }
+
     @GetMapping("auth/login/user")
     public ResponseEntity<?> getUserByAuth(Authentication auth){
         return ResponseEntity.ok(userService.getResponseByAuth(auth));
@@ -72,6 +79,16 @@ public class UserController {
     public ResponseEntity<?> deleteByUserId(@PathVariable Long userId , Authentication auth){
         userService.deleteByUserId(userId , auth);
         return ResponseEntity.ok(null);
+    }
+
+    @GetMapping("/user/is-email-exist/{email}")
+    public ResponseEntity<?> isEmailExist(@PathVariable String email , Authentication auth){
+        return ResponseEntity.ok(userService.isExistEmail(auth , email));
+    }
+
+    @GetMapping("/auth/user/is-email-exist/{email}")
+    public ResponseEntity<?> isEmailExistForAuth(@PathVariable String email , Authentication auth){
+        return ResponseEntity.ok(userService.isExistEmail(auth , email));
     }
 
 }

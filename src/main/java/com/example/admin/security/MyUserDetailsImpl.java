@@ -21,6 +21,11 @@ public class MyUserDetailsImpl implements MyUserDetails {
     }
 
     @Override
+    public String getEmail() {
+        return this.user.getEmail();
+    }
+
+    @Override
     public boolean isPermitted(){
         return user.isPermitted();
     }
