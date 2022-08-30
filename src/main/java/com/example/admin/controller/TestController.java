@@ -24,7 +24,7 @@ public class TestController {
     @Autowired
     TimestampUtil timestampUtil;
 
-    @GetMapping("/test")
+    @GetMapping("/")
     public ResponseEntity<?> test(){
 
         return ResponseEntity.ok("Hello Spring");
