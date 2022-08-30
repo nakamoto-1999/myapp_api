@@ -58,10 +58,14 @@ public class MyAuthenticationFilter extends UsernamePasswordAuthenticationFilter
     //認証成功時の処理
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
 
-        MyUserDetails userDetails = (MyUserDetails)authResult.getPrincipal();
+
+        MyUserDetails userDetails =
+               authResult.getPrincipal() instanceof MyUserDetails ?
+                       (MyUserDetails)authResult.getPrincipal() : null ;
 
         //主キーからJWTを生成
         //トークンの期限（秒）
+        if(userDetails == null)return;
         Long duraSec = 60 * 60 * 24L ;
         JwtUtil jwtUtil = new JwtUtil();
         String jwt = jwtUtil.generateToken(
