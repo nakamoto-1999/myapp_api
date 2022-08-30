@@ -36,9 +36,9 @@ out/
 ### VS Code ###
 .vscode/
 
-*.properties
-#./src/main/resources/application.properties
-#.gradle/7.4.1/dependencies-accessors/gc.properties
-#.gradle/7.4.1/gc.properties
-#.gradle/buildOutputCleanup/cache.properties
-#.gradle/vcs-1/
+#*.properties
+./src/main/resources/application.properties
+.gradle/7.4.1/dependencies-accessors/gc.properties
+.gradle/7.4.1/gc.properties
+.gradle/buildOutputCleanup/cache.properties
+.gradle/vcs-1/
