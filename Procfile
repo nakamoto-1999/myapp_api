@@ -1,1 +1,1 @@
-web: java -jar target/hoge-app.jar --server.port=${PORT}
+web: java -Dserver.port=$PORT -jar target/*.jar
