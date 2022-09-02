@@ -14,7 +14,7 @@ import java.util.function.Function;
 
 public class JwtUtil {
 
-    private String SECRET_KEY = "secret";
+    private final String SECRET_KEY = System.getenv("JWT_SECRET_KEY");
 
     public String extractTokenFromRequest(HttpServletRequest request){
         String authHeader = request.getHeader("Authorization");
@@ -37,6 +37,7 @@ public class JwtUtil {
         return claimsResolver.apply(claims);
     }
     private Claims extractAllClaims(String token) {
+        //System.out.println(SECRET_KEY);
         return Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJws(token).getBody();
     }
 
