@@ -9,8 +9,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Configuration
 public class WebMvcConfig implements WebMvcConfigurer {
 
-    @Value("${cros.origin}")
-    private String crosOrigin;
+    private String crosOrigin = System.getenv("SPRING_CROS_ORIGIN");
 
     @Override
     public void addCorsMappings(CorsRegistry registry) {

@@ -10,7 +10,7 @@ import java.sql.Timestamp;
 import java.util.List;
 
 @Entity
-@Table(name = "thread" , schema = "public")
+@Table(name = "thread")
 @NoArgsConstructor
 @AllArgsConstructor
 @Data

@@ -14,7 +14,7 @@ import java.util.function.Function;
 
 public class JwtUtil {
 
-    private final String SECRET_KEY = System.getenv("JWT_SECRET_KEY");
+    private final String SECRET_KEY = System.getenv("SPRING_JWT_SECRET_KEY");
 
     public String extractTokenFromRequest(HttpServletRequest request){
         String authHeader = request.getHeader("Authorization");
