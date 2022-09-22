@@ -16,19 +16,17 @@ public class MyLogoutSuccessHandler implements LogoutSuccessHandler {
     @Override
     public void onLogoutSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
 
-        System.out.println("ログアウト成功！");
-        Cookie [] cookies = request.getCookies();
-        if(cookies != null) {
-            for (Cookie cookie : cookies) {
-                if ("Authorization".equals(cookie.getName())) {
-                    //System.out.println(cookie);
-                    cookie.setMaxAge(0);
-                    cookie.setPath("/");
-                    response.addCookie(cookie);
-                    break;
-                }
-            }
-        }
+        ResponseCookie cookie = ResponseCookie
+                .from("Authorization" , "")
+                //環境変数からオリジン間共通のドメインを読み込む
+                .domain(System.getenv("SPRING_CROS_DOMAIN"))
+                //ここでクッキーを消している
+                .maxAge(0)
+                .httpOnly(true)
+                .secure(true)
+                .sameSite("None")
+                .build();
+        response.addHeader("Set-Cookie" , cookie.toString());
 
     }
 

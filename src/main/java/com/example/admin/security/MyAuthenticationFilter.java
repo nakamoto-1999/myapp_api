@@ -73,12 +73,10 @@ public class MyAuthenticationFilter extends UsernamePasswordAuthenticationFilter
                 duraSec
         );
 
-        //環境変数からクッキーを保存すべきドメインを読み込む
-        String crosDomain = System.getenv("SPRING_CROS_DOMAIN");
-
         ResponseCookie cookie = ResponseCookie
                 .from("Authorization" , "Bearer-" + jwt)
-                .domain(crosDomain)
+                //環境変数からオリジン間共通のドメインを読み込む
+                .domain(System.getenv("SPRING_CROS_DOMAIN"))
                 .maxAge(duraSec)
                 .httpOnly(true)
                 .secure(true)
