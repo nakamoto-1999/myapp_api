@@ -38,5 +38,4 @@ out/
 
 #*.properties
 
-.spring_delenv
-.spring_env
+env

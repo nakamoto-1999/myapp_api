@@ -1,0 +1,9 @@
+
+
+export SPRING_DATASOURCE_URL=jdbc:mysql://localhost:3306/my_app
+export SPRING_DATASOURCE_USERNAME=root
+export SPRING_DATASOURCE_PASSWORD=root_pswd
+export SPRING_DATASOURCE_DRIVER_CLASS_NAME=com.mysql.jdbc.Driver
+
+export SPRING_CROS_ORIGIN=localhost:3000
+export SPRING_JWT_SECRET_KEY=key
