@@ -2,8 +2,11 @@ package com.example.admin.response;
 
 import com.example.admin.entity.Thread;
 import com.example.admin.entity.User;
+import com.example.admin.utility.ThreadStopperUtil;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -22,8 +25,9 @@ public class ThreadResponse {
     private Timestamp updatedAt;
 
     public ThreadResponse(Thread thread){
-        //スレッドが無効、またはスレッドを立てたユーザーが無効の場合、それらを知らせるフラグ以外はフロントに返さない
-        if(thread.isValid() && thread.getUser().isValid()) {
+        //データベース上のスレッドが無効、スレッドを立てたユーザーが無効の場合、スレッドがDAT落ちしている場合
+        // スレッドの無効を知らせるフラグ以外はフロントに返さない
+        if(thread.isValid() && thread.getUser().isValid() ) {
             threadId = thread.getThreadId();
             title = thread.getTitle();
             user = new UserResponse(thread.getUser());

@@ -8,6 +8,7 @@ import com.example.admin.repository.ThreadRepository;
 import com.example.admin.request.ThreadCreateRequest;
 import com.example.admin.response.ThreadResponse;
 import com.example.admin.security.MyUserDetails;
+import com.example.admin.utility.ThreadStopperUtil;
 import com.example.admin.utility.TimestampUtil;
 import com.example.admin.utility.UserUtil;
 import com.example.admin.utility.TimestampUtilImpl;
@@ -33,10 +34,14 @@ public class ThreadServiceImpl implements ThreadService{
     UserUtil securityUtil;
 
     @Autowired
+    ThreadStopperUtil threadStopper;
+
+    @Autowired
     ThreadLogic threadLogic;
 
     @Autowired
     UserLogic userLogic;
+
 
     @Override
     public ThreadResponse createThread(Authentication auth, HttpServletRequest req, ThreadCreateRequest reqBody) {
@@ -65,6 +70,8 @@ public class ThreadServiceImpl implements ThreadService{
         List<Thread> threads = threadRepository.findAllByOrderByThreadId();
         List<ThreadResponse> threadResponses = new ArrayList<>();
         threads.forEach((Thread thread)->{
+            //スレッドストッパーが働いている場合は、isValidをfalseとして扱う
+            if(threadStopper.isStopped(thread))thread.setValid(false);
             threadResponses.add(new ThreadResponse(thread));
         });
         return threadResponses;
@@ -75,6 +82,8 @@ public class ThreadServiceImpl implements ThreadService{
         List<Thread> threads = threadRepository.findAllByUserIdOrderByThreadId(userId);
         List<ThreadResponse> threadResponses = new ArrayList<>();
         threads.forEach((Thread thread)->{
+            //スレッドストッパーが働いている場合は、isValidをfalseとして扱う
+            if(threadStopper.isStopped(thread))thread.setValid(false);
             threadResponses.add(new ThreadResponse(thread));
         });
         return threadResponses;
@@ -83,6 +92,8 @@ public class ThreadServiceImpl implements ThreadService{
     @Override
     public ThreadResponse getResponseByThreadId(Long threadId) {
         Thread thread = threadLogic.getEntityByThreadId(threadId);
+        //スレッドストッパーが働いている場合は、isValidをfalseとして扱う
+        if(threadStopper.isStopped(thread))thread.setValid(false);
         return new ThreadResponse(thread);
     }
 

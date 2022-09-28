@@ -60,7 +60,7 @@ public class PostServiceImpl implements PostService{
         Thread thread = threadLogic.getEntityByThreadId(threadId);
 
         //スレッドが無効な場合は、書き込み不可とする
-        if(threadStopper.isThreadExpired(thread)) {
+        if(threadStopper.isStopped(thread)) {
             throw new RuntimeException("Thread Stopper worked!");
         }
 

@@ -11,7 +11,9 @@ import java.time.LocalDateTime;
 public class ThreadStopperUtilImpl implements ThreadStopperUtil{
 
     @Override
-    public boolean isThreadExpired(Thread thread){
+    public boolean isStopped(Thread thread){
+
+        if(thread == null)return false;
 
         //スレッドのレス数
         final Integer postNum = thread.getPosts().size();
