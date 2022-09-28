@@ -9,6 +9,7 @@ import com.example.admin.repository.PostRepository;
 import com.example.admin.request.PostCreateRequest;
 import com.example.admin.response.PostResponse;
 import com.example.admin.security.MyUserDetails;
+import com.example.admin.utility.ThreadStopperUtil;
 import com.example.admin.utility.TimestampUtil;
 import com.example.admin.utility.UserUtil;
 import com.example.admin.utility.TimestampUtilImpl;
@@ -36,6 +37,9 @@ public class PostServiceImpl implements PostService{
     UserUtil securityUtil;
 
     @Autowired
+    ThreadStopperUtil threadStopper;
+
+    @Autowired
     UserLogic userLogic;
 
     @Autowired
@@ -51,10 +55,18 @@ public class PostServiceImpl implements PostService{
         if(userDetails == null){return;}
         //許可されていないユーザーの場合は、アクセス拒否
         if(!userDetails.isPermitted()){throw new AccessDeniedException("");}
+
+        //スレッドへの書き込み---------------------------------------------------------------
+        Thread thread = threadLogic.getEntityByThreadId(threadId);
+
+        //スレッドが無効な場合は、書き込み不可とする
+        if(threadStopper.isThreadExpired(thread)) {
+            throw new RuntimeException("Thread Stopper worked!");
+        }
+
         Post post = new Post();
         User user = userLogic.getEntitiyByUserId(userDetails.getUserId());
         post.setUser(user);
-        Thread thread = threadLogic.getEntityByThreadId(threadId);
         post.setThread(thread);
         post.setIp(req.getRemoteAddr());
         post.setContent(reqBody.getContent());
