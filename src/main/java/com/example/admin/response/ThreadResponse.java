@@ -16,32 +16,28 @@ import java.util.List;
 @Data
 public class ThreadResponse {
 
+    private boolean isDeleted;
     private Long threadId;
     private String title;
     private List<PostResponse> posts = new ArrayList<>();
-    private UserResponse user;
-    private boolean isValid;
+    private UserResponse user = new UserResponse();
     private Timestamp createdAt;
     private Timestamp updatedAt;
 
     public ThreadResponse(Thread thread){
-        //データベース上のスレッドが無効、スレッドを立てたユーザーが無効の場合、スレッドがDAT落ちしている場合
-        // スレッドの無効を知らせるフラグ以外はフロントに返さない
-        if(thread.isValid() && thread.getUser().isValid() ) {
+        isDeleted = thread.isDeleted() || thread.getUser().isDeleted();
+        if(!isDeleted) {
             threadId = thread.getThreadId();
             title = thread.getTitle();
             user = new UserResponse(thread.getUser());
-            isValid = true;
             createdAt = thread.getCreatedAt();
             updatedAt = thread.getUpdatedAt();
-        }
-        else {
-            isValid = false;
+            return;
         }
     }
 
     public void setPosts(List<PostResponse> posts) {
-        if(!isValid){return;}
+        if(!isDeleted){return;}
         this.posts = posts;
     }
 }

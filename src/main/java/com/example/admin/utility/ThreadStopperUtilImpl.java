@@ -19,10 +19,10 @@ public class ThreadStopperUtilImpl implements ThreadStopperUtil{
         final Integer postNum = thread.getPosts().size();
 
         //スレッドのレス数が1000を超える場合
-        if(postNum >= 10)return true;
+        if(postNum >= 1000)return true;
 
         //以下時間経過によるスレッドストッパー
-        final Long duraMin = 30L;
+        final Long duraMin = 1L;
 
         //レス数が0の場合、スレッドが立てられた時刻と現在時刻を比較して、duraMin分経過していた場合
         if(postNum <= 0) {

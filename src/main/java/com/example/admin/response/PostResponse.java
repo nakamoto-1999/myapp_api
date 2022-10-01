@@ -1,10 +1,12 @@
 package com.example.admin.response;
 
 import com.example.admin.entity.Post;
+import com.example.admin.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.Date;
 
@@ -12,28 +14,27 @@ import java.util.Date;
 @NoArgsConstructor
 public class PostResponse {
 
+    private boolean isDeleted;
     private Long postId;
     private String ip;
-    private UserResponse user;
+    private UserResponse user = new UserResponse();
     private String content;
-    private boolean isValid;
     private Timestamp createdAt;
     private Timestamp updatedAt;
 
     public PostResponse(Post post){
-        //投稿そのものが無効、または書き込んだユーザーが無効の場合、それをフロント側に知らせるフラグ以外はレスポンスを返さない
-        if(post.isValid() && post.getUser().isValid()) {
+        //投稿が削除または書き込んだユーザー、書き込み先スレッドが削除されている場合
+        isDeleted = post.isDeleted() || post.getUser().isDeleted() || post.getThread().isDeleted();
+        if(!isDeleted) {
             postId = post.getPostId();
             ip = post.getIp();
             user = new UserResponse(post.getUser());
-            isValid = true;
             content = post.getContent();
             createdAt = post.getCreatedAt();
             updatedAt = post.getUpdatedAt();
+            return;
         }
-        else{
-            isValid = false;
-        }
+        content = "削除済み";
     }
 
 }

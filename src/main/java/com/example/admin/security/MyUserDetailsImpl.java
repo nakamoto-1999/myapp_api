@@ -47,7 +47,7 @@ public class MyUserDetailsImpl implements MyUserDetails {
 
     @Override
     public boolean isAccountNonExpired() {
-        return user.isValid();
+        return user.isDeleted();
     }
 
     @Override

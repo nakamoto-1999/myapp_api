@@ -70,7 +70,7 @@ public class PostServiceImpl implements PostService{
         post.setThread(thread);
         post.setIp(req.getRemoteAddr());
         post.setContent(reqBody.getContent());
-        post.setValid(true);
+        post.setDeleted(false);
         post.setCreatedAt(timestampUtil.getNow());
         postRepository.save(post);
 
@@ -130,27 +130,6 @@ public class PostServiceImpl implements PostService{
     }
 
     @Override
-    public void validateByPostId(Long postId) {
-        Post post = this.getEntityByPostId(postId);
-        if(!post.isValid()) {
-            post.setValid(true);
-            post.setUpdatedAt(timestampUtil.getNow());
-            postRepository.save(post);
-        }
-    }
-
-    @Override
-    public void invalidateByPostId(Long postId) {
-
-        Post post = this.getEntityByPostId(postId);
-        if(post.isValid()) {
-            post.setValid(false);
-            post.setUpdatedAt(timestampUtil.getNow());
-            postRepository.save(post);
-        }
-    }
-
-    @Override
     public void deleteByPostId(Long postId , Authentication auth) {
 
         //IDからpostを取得
@@ -167,7 +146,7 @@ public class PostServiceImpl implements PostService{
         ){
             throw new AccessDeniedException("");
         }
-        post.setValid(false);
+        post.setDeleted(true);
         postRepository.save(post);
     }
 

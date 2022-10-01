@@ -52,17 +52,6 @@ public class ThreadController {
         return ResponseEntity.ok(threadResponse);
     }
 
-    @PutMapping("/auth/admin/thread/{threadId}/validate")
-    ResponseEntity<?> validateThreadByThreadId(@PathVariable Long threadId){
-        threadService.validateByThreadId(threadId);
-        return ResponseEntity.ok("");
-    }
-
-    @PutMapping("/auth/admin/thread/{threadId}/invalidate")
-    ResponseEntity<?> invalidateThreadByThreadId(@PathVariable Long threadId){
-        threadService.invalidateByThreadId(threadId);
-        return ResponseEntity.ok("");
-    }
 
     @DeleteMapping("/auth/thread/{threadId}/delete")
     ResponseEntity<?> deleteThreadByThreadId(@PathVariable Long threadId , Authentication auth){

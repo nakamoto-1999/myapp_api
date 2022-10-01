@@ -4,6 +4,7 @@ import com.example.admin.entity.User;
 import lombok.Data;
 
 @Data
+
 public class UserResponseAuth extends UserResponse{
 
     private String email;

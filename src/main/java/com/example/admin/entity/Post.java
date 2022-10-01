@@ -39,8 +39,8 @@ public class Post {
     @Column(name = "content")
     private String content;
 
-    @Column(name = "is_valid")
-    private boolean isValid;
+    @Column(name = "is_deleted")
+    private boolean isDeleted;
 
     @Column(name = "created_at")
     private Timestamp createdAt;

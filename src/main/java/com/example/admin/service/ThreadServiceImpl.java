@@ -58,7 +58,7 @@ public class ThreadServiceImpl implements ThreadService{
         User user = userLogic.getEntitiyByUserId(userDetails.getUserId());
         thread.setUser(user);
         thread.setIp(req.getRemoteAddr());
-        thread.setValid(true);
+        thread.setDeleted(false);
         thread.setCreatedAt(timestampUtil.getNow());
         Thread createdThread = threadRepository.save(thread);
 
@@ -71,7 +71,6 @@ public class ThreadServiceImpl implements ThreadService{
         List<ThreadResponse> threadResponses = new ArrayList<>();
         threads.forEach((Thread thread)->{
             //スレッドストッパーが働いている場合は、isValidをfalseとして扱う
-            if(threadStopper.isStopped(thread))thread.setValid(false);
             threadResponses.add(new ThreadResponse(thread));
         });
         return threadResponses;
@@ -83,7 +82,6 @@ public class ThreadServiceImpl implements ThreadService{
         List<ThreadResponse> threadResponses = new ArrayList<>();
         threads.forEach((Thread thread)->{
             //スレッドストッパーが働いている場合は、isValidをfalseとして扱う
-            if(threadStopper.isStopped(thread))thread.setValid(false);
             threadResponses.add(new ThreadResponse(thread));
         });
         return threadResponses;
@@ -93,30 +91,7 @@ public class ThreadServiceImpl implements ThreadService{
     public ThreadResponse getResponseByThreadId(Long threadId) {
         Thread thread = threadLogic.getEntityByThreadId(threadId);
         //スレッドストッパーが働いている場合は、isValidをfalseとして扱う
-        if(threadStopper.isStopped(thread))thread.setValid(false);
         return new ThreadResponse(thread);
-    }
-
-    @Override
-    public void validateByThreadId(Long threadId) {
-        Thread thread = threadLogic.getEntityByThreadId(threadId);
-        //falseの時trueにする
-        if(!thread.isValid()) {
-            thread.setValid(true);
-            thread.setUpdatedAt(timestampUtil.getNow());
-            threadRepository.save(thread);
-        }
-    }
-
-    @Override
-    public void invalidateByThreadId(Long threadId) {
-        Thread thread = threadLogic.getEntityByThreadId(threadId);
-        //trueの時falseにする
-        if(thread.isValid()) {
-            thread.setValid(false);
-            thread.setUpdatedAt(timestampUtil.getNow());
-            threadRepository.save(thread);
-        }
     }
 
     @Override
@@ -137,7 +112,7 @@ public class ThreadServiceImpl implements ThreadService{
         {
             throw new AccessDeniedException("");
         }
-        thread.setValid(false);
+        thread.setDeleted(false);
         threadRepository.save(thread);
     }
 }

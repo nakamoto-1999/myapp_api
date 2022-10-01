@@ -13,8 +13,6 @@ public interface ThreadService {
     List<ThreadResponse> getAllResponses();
     List<ThreadResponse> getAllResponseByUserId(Long userId);
     ThreadResponse getResponseByThreadId(Long threadId);
-    void validateByThreadId(Long threadId);
-    void invalidateByThreadId(Long threadId);
     void deleteByThreadId(Long threadId , Authentication auth );
 
 }

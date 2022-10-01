@@ -27,18 +27,6 @@ public class PostController {
         return ResponseEntity.ok(postService.getResponseByPostId(postId));
     }
 
-    @PutMapping("/auth/admin/post/{postId}/validate")
-    ResponseEntity<?> validate(@PathVariable Long postId){
-        postService.validateByPostId(postId);
-        return ResponseEntity.ok(null);
-    }
-
-    @PutMapping("/auth/admin/post/{postId}/invalidate")
-    ResponseEntity<?> invalidate(@PathVariable Long postId){
-        postService.invalidateByPostId(postId);
-        return ResponseEntity.ok(null);
-    }
-
     @DeleteMapping("/auth/post/{postId}/delete")
     ResponseEntity<?> delete(Authentication auth , @PathVariable Long postId){
         postService.deleteByPostId(postId , auth);

@@ -16,8 +16,6 @@ public interface PostService {
     PostResponse getResponseByPostId(Long postId);
     List<PostResponse> getAllResponsesByUserId(Long userId);
     List<PostResponse> getAllResponseByThreadId(Long threadId);
-    void validateByPostId(Long postId);
-    void invalidateByPostId(Long postId);
     void deleteByPostId(Long postId , Authentication auth);
 
 }

@@ -31,8 +31,8 @@ public class Thread {
     @Column(name = "ip")
     String ip;
 
-    @Column(name = "is_valid")
-    boolean isValid;
+    @Column(name = "is_deleted")
+    boolean isDeleted;
 
     @Column(name = "created_at")
     Timestamp createdAt;

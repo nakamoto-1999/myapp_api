@@ -18,7 +18,7 @@ public class UserResponse {
     private String name;
     private Role role;
     private boolean isPermitted;
-    private boolean isValid;
+    private boolean isDeleted;
     private Timestamp createdAt;
     private Timestamp updatedAt;
 
@@ -27,7 +27,7 @@ public class UserResponse {
         this.name = user.getName();
         this.role = user.getRole();
         this.isPermitted = user.isPermitted();
-        this.isValid = user.isValid();
+        this.isDeleted = user.isDeleted();
         this.createdAt = user.getCreatedAt();
         this.updatedAt = user.getUpdatedAt();
     }

@@ -52,7 +52,7 @@ public class UserServiceImpl implements UserService{
         user.setEmail(email);
         user.setPassword(this.passwordEncorder.encode(password));
         user.setPermitted(true);
-        user.setValid(true);
+        user.setDeleted(false);
         Role role = roleRepository.getById(roleId);
         user.setRole(role);
         user.setCreatedAt(timestampUtil.getNow());
@@ -158,7 +158,7 @@ public class UserServiceImpl implements UserService{
             throw new AccessDeniedException("");
         }
 
-        user.setValid(false);
+        user.setDeleted(false);
         userRepository.save(user);
     }
 

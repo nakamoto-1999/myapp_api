@@ -41,8 +41,8 @@ public class User {
     @Column(name = "is_permitted")
     private boolean isPermitted;
 
-    @Column(name = "is_valid")
-    private boolean isValid;
+    @Column(name = "is_deleted")
+    private boolean isDeleted;
 
     @OneToMany(mappedBy = "user" , cascade = CascadeType.ALL , orphanRemoval = true)
     @Column(insertable = false , updatable = false)
