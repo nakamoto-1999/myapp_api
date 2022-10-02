@@ -34,7 +34,6 @@ public class PostResponse {
             updatedAt = post.getUpdatedAt();
             return;
         }
-        content = "削除済み";
     }
 
 }

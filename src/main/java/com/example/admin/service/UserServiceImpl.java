@@ -158,7 +158,7 @@ public class UserServiceImpl implements UserService{
             throw new AccessDeniedException("");
         }
 
-        user.setDeleted(false);
+        user.setDeleted(true);
         userRepository.save(user);
     }
 

@@ -15,7 +15,7 @@ public interface UserRepository extends JpaRepository<User , Long> {
     List<User> findAllByOrderByUserId();
 
     //有効なユーザーの中で、同一のメールアドレスが存在するかを調べる
-    @Query("select u from User u where u.isValid = true and u.email = ?1")
+    @Query("select u from User u where u.isDeleted = 0 and u.email = ?1")
     Optional<User> findByEmail(String email);
 
 }

@@ -112,7 +112,7 @@ public class ThreadServiceImpl implements ThreadService{
         {
             throw new AccessDeniedException("");
         }
-        thread.setDeleted(false);
+        thread.setDeleted(true);
         threadRepository.save(thread);
     }
 }
