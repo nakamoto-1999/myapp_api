@@ -25,16 +25,15 @@ public class PostResponse {
     public PostResponse(Post post){
         //投稿が削除または書き込んだユーザー、書き込み先スレッドが削除されている場合
         isDeleted = post.isDeleted() || post.getUser().isDeleted() || post.getThread().isDeleted();
+        createdAt = post.getCreatedAt();
+        updatedAt = post.getUpdatedAt();
+        postId = post.getPostId();
         if(!isDeleted) {
-            postId = post.getPostId();
             ip = post.getIp();
             user = new UserResponse(post.getUser());
             content = post.getContent();
-            createdAt = post.getCreatedAt();
-            updatedAt = post.getUpdatedAt();
             return;
         }
-        content = "削除済み";
     }
 
 }

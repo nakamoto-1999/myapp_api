@@ -46,13 +46,19 @@ public class ThreadServiceImpl implements ThreadService{
     @Override
     public ThreadResponse createThread(Authentication auth, HttpServletRequest req, ThreadCreateRequest reqBody) {
 
-        if(auth == null ||req == null || reqBody == null ){return new ThreadResponse();}
+        if(auth == null ||req == null || reqBody == null ) return new ThreadResponse();
         MyUserDetails userDetails =
                 auth.getPrincipal() instanceof MyUserDetails ? (MyUserDetails) auth.getPrincipal() :null;
 
-        if(userDetails == null){return new ThreadResponse();}
+        if(userDetails == null) return new ThreadResponse();
+
         //許可されていないユーザーの場合は、アクセス拒否
-        if(!userDetails.isPermitted()){throw new AccessDeniedException("");}
+        if(!userDetails.isPermitted()) throw new AccessDeniedException("");
+
+        //スレッド数が、100を超える場合は、スレッドを作成できないようにする
+        if(threadRepository.countNotDeletedThreads() >= 500)
+            throw new RuntimeException("the number of threads reached the limit.");
+
         Thread thread = new Thread();
         thread.setTitle(reqBody.getTitle());
         User user = userLogic.getEntitiyByUserId(userDetails.getUserId());
@@ -112,7 +118,7 @@ public class ThreadServiceImpl implements ThreadService{
         {
             throw new AccessDeniedException("");
         }
-        thread.setDeleted(false);
+        thread.setDeleted(true);
         threadRepository.save(thread);
     }
 }

@@ -22,7 +22,7 @@ public class ThreadStopperUtilImpl implements ThreadStopperUtil{
         if(postNum >= 1000)return true;
 
         //以下時間経過によるスレッドストッパー
-        final Long duraMin = 1L;
+        final Long duraMin = 60L;
 
         //レス数が0の場合、スレッドが立てられた時刻と現在時刻を比較して、duraMin分経過していた場合
         if(postNum <= 0) {
