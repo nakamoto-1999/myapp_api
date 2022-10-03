@@ -76,7 +76,6 @@ public class ThreadServiceImpl implements ThreadService{
         List<Thread> threads = threadRepository.findAllByOrderByThreadId();
         List<ThreadResponse> threadResponses = new ArrayList<>();
         threads.forEach((Thread thread)->{
-            //スレッドストッパーが働いている場合は、isValidをfalseとして扱う
             threadResponses.add(new ThreadResponse(thread));
         });
         return threadResponses;
@@ -87,7 +86,6 @@ public class ThreadServiceImpl implements ThreadService{
         List<Thread> threads = threadRepository.findAllByUserIdOrderByThreadId(userId);
         List<ThreadResponse> threadResponses = new ArrayList<>();
         threads.forEach((Thread thread)->{
-            //スレッドストッパーが働いている場合は、isValidをfalseとして扱う
             threadResponses.add(new ThreadResponse(thread));
         });
         return threadResponses;
@@ -96,7 +94,6 @@ public class ThreadServiceImpl implements ThreadService{
     @Override
     public ThreadResponse getResponseByThreadId(Long threadId) {
         Thread thread = threadLogic.getEntityByThreadId(threadId);
-        //スレッドストッパーが働いている場合は、isValidをfalseとして扱う
         return new ThreadResponse(thread);
     }
 
