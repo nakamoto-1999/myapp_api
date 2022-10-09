@@ -12,6 +12,15 @@ import javax.validation.constraints.NotEmpty;
 public class ThreadCreateRequest {
 
     @NotEmpty
-    private String title;
+    private String overview;
+
+    @NotEmpty
+    private String point;
+
+    @NotEmpty
+    private String red;
+
+    @NotEmpty
+    private String blue;
 
 }

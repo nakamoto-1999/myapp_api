@@ -1,2 +1,7 @@
-package com.example.admin.logic;public class RoleLogicImpl {
+package com.example.admin.logic;
+
+import org.springframework.stereotype.Component;
+
+@Component
+public class RoleLogicImpl implements RoleLogic{
 }

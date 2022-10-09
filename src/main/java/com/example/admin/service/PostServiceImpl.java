@@ -3,6 +3,7 @@ package com.example.admin.service;
 import com.example.admin.entity.Post;
 import com.example.admin.entity.Thread;
 import com.example.admin.entity.User;
+import com.example.admin.logic.ColorLogic;
 import com.example.admin.logic.ThreadLogic;
 import com.example.admin.logic.UserLogic;
 import com.example.admin.repository.PostRepository;
@@ -45,30 +46,37 @@ public class PostServiceImpl implements PostService{
     @Autowired
     ThreadLogic threadLogic;
 
+    @Autowired
+    ColorLogic colorLogic;
+
     @Override
     public void createPost(Authentication auth, HttpServletRequest req, PostCreateRequest reqBody , Long threadId) {
 
-        if(auth == null || req == null || reqBody == null){return;}
+        if(auth == null || req == null || reqBody == null)throw new RuntimeException("required variables is null!");
         MyUserDetails userDetails =
                 auth.getPrincipal() instanceof MyUserDetails ? (MyUserDetails) auth.getPrincipal() :null;
 
-        if(userDetails == null){return;}
+        if(userDetails == null)throw new RuntimeException("required variables is null!");
         //許可されていないユーザーの場合は、アクセス拒否
-        if(!userDetails.isPermitted()){throw new AccessDeniedException("");}
+        if(!userDetails.isPermitted())throw new AccessDeniedException("");
 
         //スレッドへの書き込み---------------------------------------------------------------
         Thread thread = threadLogic.getEntityByThreadId(threadId);
 
         //スレッドが無効な場合は、書き込み不可とする
-        if(threadStopper.isStopped(thread)) {
-            throw new RuntimeException("Thread Stopper worked!");
-        }
+        //if(threadStopper.isStopped(thread)) {
+        //    throw new RuntimeException("Thread Stopper worked!");
+        //}
 
         Post post = new Post();
-        User user = userLogic.getEntitiyByUserId(userDetails.getUserId());
-        post.setUser(user);
+        post.setUser(
+                userLogic.getEntitiyByUserId(userDetails.getUserId())
+        );
         post.setThread(thread);
         post.setIp(req.getRemoteAddr());
+        post.setColor(
+                colorLogic.getEntityByColorId(reqBody.getColorId())
+        );
         post.setContent(reqBody.getContent());
         post.setDeleted(false);
         post.setCreatedAt(timestampUtil.getNow());
@@ -135,12 +143,12 @@ public class PostServiceImpl implements PostService{
         //IDからpostを取得
         Post post = this.getEntityByPostId(postId);
 
-        if(auth == null)return;
+        if(auth == null)throw new RuntimeException("required variables is null!");
         MyUserDetails userDetails =
                 auth.getPrincipal() instanceof MyUserDetails ? (MyUserDetails) auth.getPrincipal() :null;
 
         //認証を受けたユーザーが、Postを投稿したユーザーと一致せず、かつユーザーがADMINではない場合はアクセスを拒否
-        if(userDetails == null)return;
+        if(userDetails == null)throw new RuntimeException("required variables is null!");
         if(!securityUtil.isAuthIdEqualPathId(userDetails.getUserId() , post.getUser().getUserId())
                 && !securityUtil.isAdmin(userDetails.getAuthorities())
         ){

@@ -36,6 +36,10 @@ public class Post {
     @JoinColumn(name = "thread_id")
     private Thread thread;
 
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "color_id")
+    private Color color;
+
     @Column(name = "content")
     private String content;
 

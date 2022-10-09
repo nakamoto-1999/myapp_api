@@ -11,7 +11,6 @@ import com.example.admin.security.MyUserDetails;
 import com.example.admin.utility.ThreadStopperUtil;
 import com.example.admin.utility.TimestampUtil;
 import com.example.admin.utility.UserUtil;
-import com.example.admin.utility.TimestampUtilImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
@@ -46,21 +45,20 @@ public class ThreadServiceImpl implements ThreadService{
     @Override
     public ThreadResponse createThread(Authentication auth, HttpServletRequest req, ThreadCreateRequest reqBody) {
 
-        if(auth == null ||req == null || reqBody == null ) return new ThreadResponse();
+        if(auth == null ||req == null || reqBody == null ) throw new RuntimeException("required variables is null!");
         MyUserDetails userDetails =
                 auth.getPrincipal() instanceof MyUserDetails ? (MyUserDetails) auth.getPrincipal() :null;
 
-        if(userDetails == null) return new ThreadResponse();
+        if(userDetails == null) throw new RuntimeException("required variables is null!");
 
         //許可されていないユーザーの場合は、アクセス拒否
         if(!userDetails.isPermitted()) throw new AccessDeniedException("");
 
-        //スレッド数が、100を超える場合は、スレッドを作成できないようにする
-        if(threadRepository.countNotDeletedThreads() >= 500)
-            throw new RuntimeException("the number of threads reached the limit.");
-
         Thread thread = new Thread();
-        thread.setTitle(reqBody.getTitle());
+        thread.setOverview(reqBody.getOverview());
+        thread.setPoint(reqBody.getPoint());
+        thread.setRed(reqBody.getRed());
+        thread.setBlue(reqBody.getBlue());
         User user = userLogic.getEntitiyByUserId(userDetails.getUserId());
         thread.setUser(user);
         thread.setIp(req.getRemoteAddr());
@@ -75,7 +73,7 @@ public class ThreadServiceImpl implements ThreadService{
     public List<ThreadResponse> getAllResponses() {
         List<Thread> threads = threadRepository.findAllByOrderByThreadId();
         List<ThreadResponse> threadResponses = new ArrayList<>();
-        threads.forEach((Thread thread)->{
+        threads.forEach(thread ->{
             threadResponses.add(new ThreadResponse(thread));
         });
         return threadResponses;
@@ -104,7 +102,7 @@ public class ThreadServiceImpl implements ThreadService{
         Thread thread = threadLogic.getEntityByThreadId(threadId);
 
         //スレッドを立てたユーザーと、認証を受けたユーザーが一致しなければアクセス拒否
-        if(auth == null){return;}
+        if(auth == null)throw new RuntimeException("required variables is null!");
         MyUserDetails userDetails =
                 auth.getPrincipal() instanceof MyUserDetails ? (MyUserDetails) auth.getPrincipal() :null;
 

@@ -1,27 +1,24 @@
 package com.example.admin.response;
 
+import com.example.admin.entity.Post;
 import com.example.admin.entity.Thread;
-import com.example.admin.entity.User;
-import com.example.admin.utility.ThreadStopperUtil;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
-@NoArgsConstructor
 @Data
 public class ThreadResponse {
 
     private boolean isDeleted;
     private Long threadId;
-    private String title;
+    private String overView;
+    private String point;
     private List<PostResponse> posts = new ArrayList<>();
     private UserResponse user = new UserResponse();
     private Timestamp createdAt;
@@ -35,25 +32,19 @@ public class ThreadResponse {
         createdAt = thread.getCreatedAt();
         updatedAt = thread.getUpdatedAt();
         if(!isDeleted) {
-            title = thread.getTitle();
+            overView = thread.getOverview();
+            point = thread.getPoint();
             user = new UserResponse(thread.getUser());
             //デフォルトでは、スレッドのcreatedAtを基準としたスレッド終了時刻を取得する
             finishAt = getFinishAt(thread.getCreatedAt());
-            return;
         }
     }
 
-    public void setPosts(List<PostResponse> posts) {
-        if(isDeleted){return;}
-        this.posts = posts;
-        //レス数が0でなければ、最新のレスのcreatedAtを基準としたスレッド終了時刻を取得する
-        Integer postNum = this.posts.size();
-        if(postNum >= 1){
-            finishAt = getFinishAt(this.posts.get(postNum - 1).getCreatedAt());
-        }
+    public void setPosts(List<PostResponse> posts){
+        if(!isDeleted)this.posts = posts;
     }
 
-    public Timestamp getFinishAt(Timestamp timestamp){
+    private Timestamp getFinishAt(Timestamp timestamp){
         Calendar cal = Calendar.getInstance();
         cal.setTimeInMillis(timestamp.getTime());
         cal.add(Calendar.MINUTE , 60);

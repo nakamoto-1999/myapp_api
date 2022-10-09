@@ -48,7 +48,6 @@ public class ThreadController {
 
         ThreadResponse threadResponse = threadService.getResponseByThreadId(threadId);
         threadResponse.setPosts(postService.getAllResponseByThreadId(threadId));
-
         return ResponseEntity.ok(threadResponse);
     }
 

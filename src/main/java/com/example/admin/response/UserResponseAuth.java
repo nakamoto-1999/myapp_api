@@ -2,9 +2,10 @@ package com.example.admin.response;
 
 import com.example.admin.entity.User;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @Data
-
+@EqualsAndHashCode(callSuper = false)
 public class UserResponseAuth extends UserResponse{
 
     private String email;

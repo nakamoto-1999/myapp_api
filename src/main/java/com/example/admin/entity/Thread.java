@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -21,8 +22,24 @@ public class Thread {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long threadId;
 
-    @Column(name = "title")
-    String title;
+    @Column(name = "overview")
+    String overview;
+
+    @Column(name = "point")
+    String point;
+
+    @Column(name = "red")
+    String red;
+
+    @Column(name = "blue")
+    String blue;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "concluded_color_id")
+    Color concludedColor;
+
+    @Column(name = "is_concluded")
+    boolean isConcluded;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
@@ -41,6 +58,6 @@ public class Thread {
     Timestamp updatedAt;
 
     @OneToMany(mappedBy = "thread" , cascade = CascadeType.ALL , orphanRemoval = true)
-    List<Post> posts;
+    List<Post> posts = new ArrayList<>();
 
 }

@@ -27,6 +27,6 @@ public class TestController {
     @GetMapping("/")
     public ResponseEntity<?> test(){
 
-        return ResponseEntity.ok("Hello Commoard");
+        return ResponseEntity.ok("Hello Soshou Gokko");
     }
 }

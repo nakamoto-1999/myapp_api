@@ -18,6 +18,7 @@ public class PostResponse {
     private Long postId;
     private String ip;
     private UserResponse user = new UserResponse();
+    private ColorResponse color;
     private String content;
     private Timestamp createdAt;
     private Timestamp updatedAt;
@@ -31,6 +32,7 @@ public class PostResponse {
         if(!isDeleted) {
             ip = post.getIp();
             user = new UserResponse(post.getUser());
+            color = new ColorResponse(post.getColor());
             content = post.getContent();
             return;
         }

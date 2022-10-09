@@ -1,2 +1,20 @@
-package com.example.admin.response;public class ColorResponse {
+package com.example.admin.response;
+
+import com.example.admin.entity.Color;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@NoArgsConstructor
+public class ColorResponse {
+
+    Long colorId;
+    String name;
+
+    public ColorResponse(Color color){
+        colorId = color.getColorId();
+        name = color.getName();
+    }
+
 }

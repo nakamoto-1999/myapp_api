@@ -104,22 +104,22 @@ public class UserServiceImpl implements UserService{
 
     @Override
     public UserResponse getResponseByAuth(Authentication auth) {
-        if(auth == null){return new UserResponse();}
+        if(auth == null)throw new RuntimeException("required variables is null!");
         MyUserDetails userDetails =
                 auth.getPrincipal() instanceof MyUserDetails ? (MyUserDetails) auth.getPrincipal() :null;
-        if(userDetails == null){return new UserResponse();}
+        if(userDetails == null)throw new RuntimeException("required variables is null!");
         User user = userLogic.getEntitiyByUserId(userDetails.getUserId());
         return new UserResponse(user);
     }
 
     @Override
     public void updateByUserId(Long userId , Authentication auth , UserCreateUpdateRequest request ) {
-        if(auth == null || request == null){return;}
+        if(auth == null || request == null)throw new RuntimeException("required variables is null!");
         MyUserDetails userDetails =
                 auth.getPrincipal() instanceof MyUserDetails ? (MyUserDetails) auth.getPrincipal() :null;
 
         //認証を受けたユーザーと取得したユーザーが一致しない場合は、アクセス拒否
-        if(userDetails == null){return;}
+        if(userDetails == null)throw new RuntimeException("required variables is null!");
         if(!securityUtil.isAuthIdEqualPathId(userDetails.getUserId() , userId)){
             throw new AccessDeniedException("");
         }
@@ -145,7 +145,7 @@ public class UserServiceImpl implements UserService{
     @Override
     public void deleteByUserId(Long userId , Authentication auth) {
 
-        if(auth == null)return;
+        if(auth == null)throw new RuntimeException("required variables is null!");
         MyUserDetails userDetails =
                 auth.getPrincipal() instanceof MyUserDetails ? (MyUserDetails) auth.getPrincipal() :null;
 
@@ -153,7 +153,7 @@ public class UserServiceImpl implements UserService{
         User user = this.userLogic.getEntitiyByUserId(userId);
 
         //認証を受けたユーザーを取得したユーザーが一致せず、RoleもAdminではない場合はアクセス拒否
-        if(userDetails == null){return;}
+        if(userDetails == null)throw new RuntimeException("required variables is null!");
         if(!securityUtil.isAuthIdEqualPathId(userDetails.getUserId() , user.getUserId()) && !securityUtil.isAdmin(userDetails.getAuthorities())){
             throw new AccessDeniedException("");
         }
