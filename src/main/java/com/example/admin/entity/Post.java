@@ -10,7 +10,7 @@ import org.hibernate.engine.profile.Fetch;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
-import java.util.Date;
+
 
 
 @Entity
