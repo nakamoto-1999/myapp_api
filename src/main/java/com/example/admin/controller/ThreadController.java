@@ -3,6 +3,7 @@ package com.example.admin.controller;
 import com.example.admin.request.PostCreateRequest;
 import com.example.admin.request.ThreadConcludeRequest;
 import com.example.admin.request.ThreadCreateRequest;
+import com.example.admin.response.PostResponse;
 import com.example.admin.response.ThreadResponse;
 import com.example.admin.service.PostService;
 import com.example.admin.service.ThreadService;
@@ -46,16 +47,20 @@ public class ThreadController {
 
     @GetMapping("/thread/{threadId}")
     ResponseEntity<?> getThreadByThreadId(@PathVariable Long threadId){
-
-        ThreadResponse threadResponse = threadService.getResponseByThreadId(threadId);
-        threadResponse.setPosts(postService.getAllResponseByThreadId(threadId));
-        return ResponseEntity.ok(threadResponse);
+        ThreadResponse response = threadService.getResponseByThreadId(threadId);
+        return ResponseEntity.ok(response);
     }
 
     @PutMapping("/auth/thread/{threadId}/conclude")
     ResponseEntity<?> concludeByThreadId(@PathVariable Long threadId, Authentication auth ,
                                          @Validated @RequestBody ThreadConcludeRequest reqBody) {
         threadService.concludeByThreadId(threadId , auth , reqBody);
+        return ResponseEntity.ok(null);
+    }
+
+    @PostMapping("/auth/thread/{threadId}/user/{userId}/block")
+    ResponseEntity<?> blockUser(@PathVariable Long threadId , @PathVariable Long userId , Authentication auth){
+        threadService.addBlockedUser(threadId , userId , auth);
         return ResponseEntity.ok(null);
     }
 

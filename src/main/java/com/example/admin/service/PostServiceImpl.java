@@ -2,7 +2,6 @@ package com.example.admin.service;
 
 import com.example.admin.entity.Post;
 import com.example.admin.entity.Thread;
-import com.example.admin.entity.User;
 import com.example.admin.logic.ColorLogic;
 import com.example.admin.logic.ThreadLogic;
 import com.example.admin.logic.UserLogic;
@@ -10,10 +9,9 @@ import com.example.admin.repository.PostRepository;
 import com.example.admin.request.PostCreateRequest;
 import com.example.admin.response.PostResponse;
 import com.example.admin.security.MyUserDetails;
-import com.example.admin.utility.ThreadStopperUtil;
+import com.example.admin.utility.ThreadUtil;
 import com.example.admin.utility.TimestampUtil;
 import com.example.admin.utility.UserUtil;
-import com.example.admin.utility.TimestampUtilImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
@@ -21,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,7 +37,7 @@ public class PostServiceImpl implements PostService{
     UserUtil securityUtil;
 
     @Autowired
-    ThreadStopperUtil threadStopper;
+    ThreadUtil threadUtil;
 
     @Autowired
     UserLogic userLogic;
@@ -50,24 +49,28 @@ public class PostServiceImpl implements PostService{
     ColorLogic colorLogic;
 
     @Override
-    public void createPost(Authentication auth, HttpServletRequest req, PostCreateRequest reqBody , Long threadId) {
+    public void createPost(@NotNull Authentication auth,@NotNull HttpServletRequest req,@NotNull PostCreateRequest reqBody ,
+                           Long threadId) {
 
-        if(auth == null || req == null || reqBody == null)throw new RuntimeException("required variables is null!");
-        MyUserDetails userDetails =
+        @NotNull MyUserDetails userDetails =
                 auth.getPrincipal() instanceof MyUserDetails ? (MyUserDetails) auth.getPrincipal() :null;
 
-        if(userDetails == null)throw new RuntimeException("required variables is null!");
-
-        //許可されていないユーザーの場合は、アクセス拒否
-        if(!userDetails.isPermitted())throw new AccessDeniedException("");
+        //許可されていないユーザーの場合アクセス拒否
+        if(!userDetails.isPermitted())
+            throw new AccessDeniedException("");
 
         //スレッドへの書き込み---------------------------------------------------------------
         Thread thread = threadLogic.getEntityByThreadId(threadId);
 
+        //Admin権限者、もしくはスレッドを立てたユーザー以外で、スレッドのブロックユーザーリストに登録されているユーザーは、アクセス拒否
+        if(!securityUtil.isAdmin(userDetails.getAuthorities()) &&
+                userDetails.getUserId() != thread.getUser().getUserId() &&
+                    threadUtil.isUserIdExistInBlockedList(thread.getBlockedUsers() , userDetails.getUserId()))
+                        throw new AccessDeniedException("blocked by thread owner!");
+
         //スレッドがclosedの要件に該当するとき、書き込み不可とするストッパー
-        if(threadStopper.isStopped(thread)) {
+        if(threadUtil.isStopped(thread))
             throw new RuntimeException("Thread Stopper worked!");
-        }
 
         Post post = new Post();
         post.setUser(
@@ -139,17 +142,15 @@ public class PostServiceImpl implements PostService{
     }
 
     @Override
-    public void deleteByPostId(Long postId , Authentication auth) {
+    public void deleteByPostId(Long postId ,@NotNull Authentication auth) {
+
+        @NotNull MyUserDetails userDetails =
+                auth.getPrincipal() instanceof MyUserDetails ? (MyUserDetails) auth.getPrincipal() :null;
 
         //IDからpostを取得
         Post post = this.getEntityByPostId(postId);
 
-        if(auth == null)throw new RuntimeException("required variables is null!");
-        MyUserDetails userDetails =
-                auth.getPrincipal() instanceof MyUserDetails ? (MyUserDetails) auth.getPrincipal() :null;
-
         //認証を受けたユーザーが、Postを投稿したユーザーと一致せず、かつユーザーがADMINではない場合はアクセスを拒否
-        if(userDetails == null)throw new RuntimeException("required variables is null!");
         if(!securityUtil.isAuthIdEqualPathId(userDetails.getUserId() , post.getUser().getUserId())
                 && !securityUtil.isAdmin(userDetails.getAuthorities()))
                     throw new AccessDeniedException("");

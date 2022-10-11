@@ -16,5 +16,6 @@ public interface ThreadService {
     ThreadResponse getResponseByThreadId(Long threadId);
     void concludeByThreadId(Long threadId , Authentication auth , ThreadConcludeRequest reqBody);
     void deleteByThreadId(Long threadId , Authentication auth );
+    void addBlockedUser(Long threadId ,Long userId , Authentication auth);
 
 }

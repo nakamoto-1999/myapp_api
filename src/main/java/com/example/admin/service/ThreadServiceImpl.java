@@ -1,16 +1,18 @@
 package com.example.admin.service;
 
+import com.example.admin.entity.BlockedUserOfThread;
 import com.example.admin.entity.Thread;
 import com.example.admin.entity.User;
 import com.example.admin.logic.ColorLogic;
 import com.example.admin.logic.ThreadLogic;
 import com.example.admin.logic.UserLogic;
+import com.example.admin.repository.BlockedUserOfThreadRepository;
 import com.example.admin.repository.ThreadRepository;
 import com.example.admin.request.ThreadConcludeRequest;
 import com.example.admin.request.ThreadCreateRequest;
 import com.example.admin.response.ThreadResponse;
 import com.example.admin.security.MyUserDetails;
-import com.example.admin.utility.ThreadStopperUtil;
+import com.example.admin.utility.ThreadUtil;
 import com.example.admin.utility.TimestampUtil;
 import com.example.admin.utility.UserUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +21,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
-import java.security.Principal;
+import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,16 +32,22 @@ public class ThreadServiceImpl implements ThreadService{
     ThreadRepository threadRepository;
 
     @Autowired
+    BlockedUserOfThreadRepository blockedUserOfThreadRepository;
+
+    @Autowired
     TimestampUtil timestampUtil;
 
     @Autowired
     UserUtil securityUtil;
 
     @Autowired
-    ThreadStopperUtil threadStopper;
+    ThreadUtil threadStopper;
 
     @Autowired
     ThreadLogic threadLogic;
+
+    @Autowired
+    ThreadUtil threadUtil;
 
     @Autowired
     UserLogic userLogic;
@@ -49,13 +57,11 @@ public class ThreadServiceImpl implements ThreadService{
 
 
     @Override
-    public ThreadResponse createThread(Authentication auth, HttpServletRequest req, ThreadCreateRequest reqBody) {
+    public ThreadResponse createThread(@NotNull Authentication auth,@NotNull HttpServletRequest req,
+                                       @NotNull ThreadCreateRequest reqBody) {
 
-        if(auth == null ||req == null || reqBody == null ) throw new RuntimeException("required variables is null!");
-        MyUserDetails userDetails =
+        @NotNull MyUserDetails userDetails =
                 auth.getPrincipal() instanceof MyUserDetails ? (MyUserDetails) auth.getPrincipal() :null;
-
-        if(userDetails == null) throw new RuntimeException("required variables is null!");
 
         //許可されていないユーザーの場合は、アクセス拒否
         if(!userDetails.isPermitted()) throw new AccessDeniedException("");
@@ -99,20 +105,21 @@ public class ThreadServiceImpl implements ThreadService{
 
     @Override
     public ThreadResponse getResponseByThreadId(Long threadId) {
+        //データベース上からエンティティを取得
         Thread thread = threadLogic.getEntityByThreadId(threadId);
-        return new ThreadResponse(thread);
+        //エンティティをレスポンス用オブジェクトに移し替え
+        ThreadResponse threadResponse = new ThreadResponse(thread);
+        threadResponse.setPosts(thread.getPosts());
+        threadResponse.setBlockedUsers(thread.getBlockedUsers());
+        return threadResponse;
     }
 
     @Override
-    public void concludeByThreadId(Long threadId, Authentication auth, ThreadConcludeRequest reqBody) {
+    public void concludeByThreadId(Long threadId,@NotNull Authentication auth,
+                                   @NotNull ThreadConcludeRequest reqBody) {
 
-        if(auth == null || reqBody == null)
-            throw new RuntimeException("required variables is null!");
-        MyUserDetails userDetails = auth.getPrincipal() instanceof MyUserDetails?
+        @NotNull MyUserDetails userDetails = auth.getPrincipal() instanceof MyUserDetails?
                 (MyUserDetails) auth.getPrincipal() : null;
-
-        if(userDetails == null)
-            throw new RuntimeException("required variables is null!");
 
         Thread thread = threadLogic.getEntityByThreadId(threadId);
         //認可を受けたユーザーとスレッドを立てたユーザーが異なるとき、アクセス拒否
@@ -132,17 +139,37 @@ public class ThreadServiceImpl implements ThreadService{
     }
 
     @Override
-    public void deleteByThreadId(Long threadId , Authentication auth) {
+    public void addBlockedUser(Long threadId, Long userId,@NotNull Authentication auth) {
+        @NotNull MyUserDetails userDetails = auth.getPrincipal() instanceof MyUserDetails ?
+                (MyUserDetails) auth.getPrincipal() : null;
+
+        //スレッドエンティティと、ブロック対象のユーザーエンティティを取得
+        Thread thread = threadLogic.getEntityByThreadId(threadId);
+        User user = userLogic.getEntitiyByUserId(userId);
+
+        if(userDetails.getUserId() != thread.getUser().getUserId())
+            throw new AccessDeniedException("");
+
+        //管理者権限を持っているユーザー、及び該当のスレッドを立てたユーザー、既にブロックリストへ追加ずみのユーザーはブロックリストに追加できない
+        if(securityUtil.isAdmin(userDetails.getAuthorities()) || thread.getUser().getUserId() == user.getUserId() ||
+                threadUtil.isUserIdExistInBlockedList(thread.getBlockedUsers() , user.getUserId()))
+                    throw new RuntimeException("faild to add user into blocked list");
+
+        //ユーザーをブロックリストへ追加
+        BlockedUserOfThread blockedUser = new BlockedUserOfThread(thread , user);
+        blockedUserOfThreadRepository.save(blockedUser);
+
+    }
+
+    @Override
+    public void deleteByThreadId(Long threadId ,@NotNull Authentication auth) {
+
+        //スレッドを立てたユーザーと、認証を受けたユーザーが一致しなければアクセス拒否
+        @NotNull MyUserDetails userDetails =
+                auth.getPrincipal() instanceof MyUserDetails ? (MyUserDetails) auth.getPrincipal() :null;
 
         //IDからスレッドを取得
         Thread thread = threadLogic.getEntityByThreadId(threadId);
-
-        //スレッドを立てたユーザーと、認証を受けたユーザーが一致しなければアクセス拒否
-        if(auth == null) throw new RuntimeException("required variables is null!");
-        MyUserDetails userDetails =
-                auth.getPrincipal() instanceof MyUserDetails ? (MyUserDetails) auth.getPrincipal() :null;
-
-        if(userDetails == null)throw new RuntimeException("required variables is null!");
 
         if(!securityUtil.isAuthIdEqualPathId(userDetails.getUserId() , thread.getUser().getUserId())
                 && !securityUtil.isAdmin(userDetails.getAuthorities()))

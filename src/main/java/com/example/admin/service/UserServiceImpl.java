@@ -20,6 +20,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -46,7 +47,7 @@ public class UserServiceImpl implements UserService{
     UserUtil securityUtil;
 
     private User create(String name, String email, String password , Long roleId) {
-        System.out.println(name);
+        //System.out.println(name);
         User user = new User();
         user.setName(name);
         user.setEmail(email);
@@ -60,19 +61,15 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public UserResponse createGeneralUser(UserCreateUpdateRequest request) {
-        System.out.println(request);
-        if(request == null) {return new UserResponse();}
+    public UserResponse createGeneralUser(@NotNull UserCreateUpdateRequest request) {
+        //System.out.println(request);
         User createdUser = create(request.getName(), request.getEmail() , request.getPassword() , 1L);
-        if(createdUser == null) {return new UserResponse();}
         return new UserResponse(createdUser);
     }
 
     @Override
-    public UserResponse createAdminUser(UserCreateUpdateRequest request) {
-        if(request == null) {return new UserResponse();}
+    public UserResponse createAdminUser(@NotNull UserCreateUpdateRequest request) {
         User createdUser = create(request.getName(), request.getEmail() , request.getPassword() , 2L);
-        if(createdUser == null) {return new UserResponse();}
         return new UserResponse(createdUser);
     }
 
@@ -103,9 +100,8 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public UserResponse getResponseByAuth(Authentication auth) {
-        if(auth == null)throw new RuntimeException("required variables is null!");
-        MyUserDetails userDetails =
+    public UserResponse getResponseByAuth(@NotNull Authentication auth) {
+        @NotNull MyUserDetails userDetails =
                 auth.getPrincipal() instanceof MyUserDetails ? (MyUserDetails) auth.getPrincipal() :null;
         if(userDetails == null)throw new RuntimeException("required variables is null!");
         User user = userLogic.getEntitiyByUserId(userDetails.getUserId());
@@ -113,9 +109,8 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public void updateByUserId(Long userId , Authentication auth , UserCreateUpdateRequest request ) {
-        if(auth == null || request == null)throw new RuntimeException("required variables is null!");
-        MyUserDetails userDetails =
+    public void updateByUserId(Long userId ,@NotNull Authentication auth ,@NotNull UserCreateUpdateRequest request ) {
+        @NotNull MyUserDetails userDetails =
                 auth.getPrincipal() instanceof MyUserDetails ? (MyUserDetails) auth.getPrincipal() :null;
 
         //認証を受けたユーザーと取得したユーザーが一致しない場合は、アクセス拒否
@@ -143,10 +138,9 @@ public class UserServiceImpl implements UserService{
 
     //ユーザーの削除は、認証を受けたユーザーと削除対象のユーザーが同じユーザーか、AdminのRoleを持っているユーザーのみ許可する
     @Override
-    public void deleteByUserId(Long userId , Authentication auth) {
+    public void deleteByUserId(Long userId ,@NotNull Authentication auth) {
 
-        if(auth == null)throw new RuntimeException("required variables is null!");
-        MyUserDetails userDetails =
+        @NotNull MyUserDetails userDetails =
                 auth.getPrincipal() instanceof MyUserDetails ? (MyUserDetails) auth.getPrincipal() :null;
 
         //ユーザーの取得

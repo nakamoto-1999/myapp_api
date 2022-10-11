@@ -16,16 +16,16 @@ public class BlockedUserOfThread {
     @EmbeddedId
     PkOfThreadAndUser pk;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "thread_id")
+    @ManyToOne()
+    @JoinColumn(name = "thread_id" , insertable = false , updatable = false)
     Thread thread;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "user_id")
+    @ManyToOne()
+    @JoinColumn(name = "user_id" , insertable = false , updatable = false)
     User user;
 
-    public BlockedUserOfThread(Long threadId , Long userId , Thread thread , User user){
-        this.pk = new PkOfThreadAndUser(threadId , userId);
+    public BlockedUserOfThread(Thread thread , User user){
+        this.pk = new PkOfThreadAndUser(thread.getThreadId() , user.getUserId());
         this.thread = thread;
         this.user = user;
     }

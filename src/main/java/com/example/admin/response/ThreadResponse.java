@@ -1,5 +1,6 @@
 package com.example.admin.response;
 
+import com.example.admin.entity.BlockedUserOfThread;
 import com.example.admin.entity.Post;
 import com.example.admin.entity.Thread;
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -26,6 +27,7 @@ public class ThreadResponse {
     private ColorResponse concludedColor;
     private String conclusionReason;
     private List<PostResponse> posts = new ArrayList<>();
+    private List<BlockedUserResponse> blockedUsers = new ArrayList<>();
     private UserResponse user;
     private Timestamp createdAt;
     private Timestamp updatedAt;
@@ -56,8 +58,26 @@ public class ThreadResponse {
 
     }
 
-    public void setPosts(List<PostResponse> posts){
-        if(!isDeleted)this.posts = posts;
+    public void setPosts(List<Post> posts){
+        if(isDeleted)return;
+        posts.forEach(post -> {
+            //System.out.println(post.getContent());
+            this.posts.add(new PostResponse(post));
+        });
+        //this.posts.forEach(postResponse -> {
+        //    System.out.println(postResponse.getContent());
+        //});
+    }
+
+    public void setBlockedUsers(List<BlockedUserOfThread> blockedUsers){
+        if(isDeleted)return;
+        blockedUsers.forEach(blockedUserOfThread -> {
+            //System.out.println(blockedUserOfThread.getUser().getName());
+            this.blockedUsers.add(new BlockedUserResponse(blockedUserOfThread));
+        });
+        //this.blockedUsers.forEach(blockedUserResponse -> {
+        //    System.out.println(blockedUserResponse.user.getName());
+        //});
     }
 
     private Timestamp getFinishAt(Timestamp timestamp){
