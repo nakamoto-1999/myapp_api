@@ -12,6 +12,7 @@ public class UserResponseAuth extends UserResponse{
 
     public UserResponseAuth(User user){
         super(user);
+        if(user == null)return;
         email = user.getEmail();
     }
 

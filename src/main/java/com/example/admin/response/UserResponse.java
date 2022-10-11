@@ -23,6 +23,7 @@ public class UserResponse {
     private Timestamp updatedAt;
 
     public UserResponse(User user){
+        if(user == null)return;
         this.userId = user.getUserId();
         this.name = user.getName();
         this.role = user.getRole();

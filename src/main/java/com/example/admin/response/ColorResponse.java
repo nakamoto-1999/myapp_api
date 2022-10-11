@@ -13,6 +13,7 @@ public class ColorResponse {
     String name;
 
     public ColorResponse(Color color){
+        if(color == null)return;
         colorId = color.getColorId();
         name = color.getName();
     }

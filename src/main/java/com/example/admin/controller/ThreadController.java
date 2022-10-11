@@ -1,6 +1,7 @@
 package com.example.admin.controller;
 
 import com.example.admin.request.PostCreateRequest;
+import com.example.admin.request.ThreadConcludeRequest;
 import com.example.admin.request.ThreadCreateRequest;
 import com.example.admin.response.ThreadResponse;
 import com.example.admin.service.PostService;
@@ -51,6 +52,12 @@ public class ThreadController {
         return ResponseEntity.ok(threadResponse);
     }
 
+    @PutMapping("/auth/thread/{threadId}/conclude")
+    ResponseEntity<?> concludeByThreadId(@PathVariable Long threadId, Authentication auth ,
+                                         @Validated @RequestBody ThreadConcludeRequest reqBody) {
+        threadService.concludeByThreadId(threadId , auth , reqBody);
+        return ResponseEntity.ok(null);
+    }
 
     @DeleteMapping("/auth/thread/{threadId}/delete")
     ResponseEntity<?> deleteThreadByThreadId(@PathVariable Long threadId , Authentication auth){

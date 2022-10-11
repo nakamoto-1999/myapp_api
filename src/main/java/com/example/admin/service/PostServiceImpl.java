@@ -57,16 +57,17 @@ public class PostServiceImpl implements PostService{
                 auth.getPrincipal() instanceof MyUserDetails ? (MyUserDetails) auth.getPrincipal() :null;
 
         if(userDetails == null)throw new RuntimeException("required variables is null!");
+
         //許可されていないユーザーの場合は、アクセス拒否
         if(!userDetails.isPermitted())throw new AccessDeniedException("");
 
         //スレッドへの書き込み---------------------------------------------------------------
         Thread thread = threadLogic.getEntityByThreadId(threadId);
 
-        //スレッドが無効な場合は、書き込み不可とする
-        //if(threadStopper.isStopped(thread)) {
-        //    throw new RuntimeException("Thread Stopper worked!");
-        //}
+        //スレッドがclosedの要件に該当するとき、書き込み不可とするストッパー
+        if(threadStopper.isStopped(thread)) {
+            throw new RuntimeException("Thread Stopper worked!");
+        }
 
         Post post = new Post();
         post.setUser(
@@ -150,10 +151,11 @@ public class PostServiceImpl implements PostService{
         //認証を受けたユーザーが、Postを投稿したユーザーと一致せず、かつユーザーがADMINではない場合はアクセスを拒否
         if(userDetails == null)throw new RuntimeException("required variables is null!");
         if(!securityUtil.isAuthIdEqualPathId(userDetails.getUserId() , post.getUser().getUserId())
-                && !securityUtil.isAdmin(userDetails.getAuthorities())
-        ){
-            throw new AccessDeniedException("");
-        }
+                && !securityUtil.isAdmin(userDetails.getAuthorities()))
+                    throw new AccessDeniedException("");
+
+        if(post.getThread().isClosed() || post.getThread().isConcluded() || post.isDeleted())
+            throw new RuntimeException("faild to delete");
         post.setDeleted(true);
         postRepository.save(post);
     }

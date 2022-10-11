@@ -8,8 +8,12 @@ import org.springframework.stereotype.Service;
 @Service
 public class BackGroundRunner {
 
+    @Autowired
+    ThreadRepository threadRepository;
 
-
-
+    @Scheduled(fixedDelay = 1000)
+    void monitorThreads(){
+        threadRepository.updateIsClosed();
+    }
 
 }

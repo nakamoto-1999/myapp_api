@@ -34,9 +34,15 @@ public class Thread {
     @Column(name = "blue")
     String blue;
 
+    @Column(name = "is_closed")
+    boolean isClosed;
+
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "concluded_color_id")
     Color concludedColor;
+
+    @Column(name = "conclusion_reason")
+    String conclusionReason;
 
     @Column(name = "is_concluded")
     boolean isConcluded;
