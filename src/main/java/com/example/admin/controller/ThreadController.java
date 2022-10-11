@@ -60,7 +60,13 @@ public class ThreadController {
 
     @PostMapping("/auth/thread/{threadId}/user/{userId}/block")
     ResponseEntity<?> blockUser(@PathVariable Long threadId , @PathVariable Long userId , Authentication auth){
-        threadService.addBlockedUser(threadId , userId , auth);
+        threadService.blockUser(threadId , userId , auth);
+        return ResponseEntity.ok(null);
+    }
+
+    @DeleteMapping("/auth/thread/{threadId}/user/{userId}/unblock")
+    ResponseEntity<?> unblockUser(@PathVariable Long threadId , @PathVariable Long userId , Authentication auth){
+        threadService.unblockUser(threadId , userId , auth);
         return ResponseEntity.ok(null);
     }
 

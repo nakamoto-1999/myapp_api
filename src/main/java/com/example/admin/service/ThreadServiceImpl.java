@@ -1,5 +1,6 @@
 package com.example.admin.service;
 
+import com.example.admin.compositekey.PkOfThreadAndUser;
 import com.example.admin.entity.BlockedUserOfThread;
 import com.example.admin.entity.Thread;
 import com.example.admin.entity.User;
@@ -139,7 +140,7 @@ public class ThreadServiceImpl implements ThreadService{
     }
 
     @Override
-    public void addBlockedUser(Long threadId, Long userId,@NotNull Authentication auth) {
+    public void blockUser(Long threadId, Long userId,@NotNull Authentication auth) {
         @NotNull MyUserDetails userDetails = auth.getPrincipal() instanceof MyUserDetails ?
                 (MyUserDetails) auth.getPrincipal() : null;
 
@@ -158,6 +159,22 @@ public class ThreadServiceImpl implements ThreadService{
         //ユーザーをブロックリストへ追加
         BlockedUserOfThread blockedUser = new BlockedUserOfThread(thread , user);
         blockedUserOfThreadRepository.save(blockedUser);
+
+    }
+
+    @Override
+    public void unblockUser(Long threadId , Long userId ,@NotNull Authentication auth){
+        @NotNull MyUserDetails userDetails = auth.getPrincipal() instanceof MyUserDetails ?
+                (MyUserDetails) auth.getPrincipal() : null;
+
+        BlockedUserOfThread blockedUser
+                = blockedUserOfThreadRepository.findById(new PkOfThreadAndUser(threadId , userId))
+                .orElseThrow(() -> new IllegalArgumentException());
+
+        //ブロックユーザーを持っているスレッドのスレ主でなければ、アクセス拒否
+        if(userDetails.getUserId() != blockedUser.getThread().getUser().getUserId())
+            throw new AccessDeniedException("");
+        blockedUserOfThreadRepository.delete(blockedUser);
 
     }
 
