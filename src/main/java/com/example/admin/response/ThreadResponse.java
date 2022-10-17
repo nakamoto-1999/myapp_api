@@ -18,7 +18,7 @@ public class ThreadResponse {
 
     private boolean isDeleted;
     private Long threadId;
-    private String overView;
+    private String overview;
     private String point;
     private String red;
     private String blue;
@@ -42,7 +42,7 @@ public class ThreadResponse {
         createdAt = thread.getCreatedAt();
         updatedAt = thread.getUpdatedAt();
         if(isDeleted)return;
-        overView = thread.getOverview();
+        overview = thread.getOverview();
         point = thread.getPoint();
         red = thread.getRed();
         blue = thread.getBlue();

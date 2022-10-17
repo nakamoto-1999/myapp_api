@@ -11,7 +11,6 @@ public class ThreadConcludeRequest {
     @NotNull
     Long concludedColorId;
 
-    @NotEmpty
     String conclusionReason;
 
 }

@@ -11,7 +11,7 @@ import java.util.List;
 @Transactional
 public interface ThreadRepository extends JpaRepository<Thread, Long> {
 
-    List<Thread> findAllByOrderByThreadId();
+    List<Thread> findAllByOrderByCreatedAtDesc();
 
     @Query("SELECT DISTINCT th FROM Thread th WHERE th.user.userId = ?1 ORDER BY th.threadId")
     List<Thread> findAllByUserIdOrderByThreadId(Long userId);

@@ -86,7 +86,7 @@ public class ThreadServiceImpl implements ThreadService{
 
     @Override
     public List<ThreadResponse> getAllResponses() {
-        List<Thread> threads = threadRepository.findAllByOrderByThreadId();
+        List<Thread> threads = threadRepository.findAllByOrderByCreatedAtDesc();
         List<ThreadResponse> threadResponses = new ArrayList<>();
         threads.forEach(thread ->{
             threadResponses.add(new ThreadResponse(thread));
@@ -134,7 +134,9 @@ public class ThreadServiceImpl implements ThreadService{
         thread.setConcludedColor(
                 colorLogic.getEntityByColorId(reqBody.getConcludedColorId())
         );
+        //reasonが空文字でなければ
         thread.setConclusionReason(reqBody.getConclusionReason());
+
         threadRepository.save(thread);
 
     }
