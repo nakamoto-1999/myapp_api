@@ -16,6 +16,10 @@ public interface ThreadRepository extends JpaRepository<Thread, Long> {
     @Query("SELECT DISTINCT th FROM Thread th WHERE th.user.userId = ?1 ORDER BY th.threadId")
     List<Thread> findAllByUserIdOrderByThreadId(Long userId);
 
+    @Query("SELECT DISTINCT th FROM Thread th WHERE th.overview LIKE %?1% OR th.point LIKE %?1% OR th.red LIKE %?1% OR th.blue LIKE %?1% " +
+            "OR th.user.name LIKE %?1% ORDER BY th.createdAt DESC")
+    List<Thread> findAllByKeyword(String keyword);
+
     //レス数が1000以上、レス数が0かつスレッド作成後の60分経過、最新のレス投稿後60分経過しているスレッドのis_deletedを1にする
     @Query(
             nativeQuery = true,
@@ -28,8 +32,8 @@ public interface ThreadRepository extends JpaRepository<Thread, Long> {
     @Modifying
     void updateIsClosed();
 
-    //削除されていないスレッドを集計する
-    @Query(value = "SELECT COUNT(th) FROM Thread th WHERE th.isDeleted = 0")
+    //閉鎖されていないスレッドを集計する
+    @Query(value = "SELECT COUNT(th) FROM Thread th WHERE th.isClosed = 0")
     Long countNotDeletedThreads();
 
 }

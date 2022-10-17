@@ -95,10 +95,27 @@ public class ThreadServiceImpl implements ThreadService{
     }
 
     @Override
-    public List<ThreadResponse> getAllResponseByUserId(Long userId) {
+    public List<ThreadResponse> getAllResponseByUserId(Long userId ,@NotNull Authentication auth) {
+        @NotNull MyUserDetails userDetails = auth.getPrincipal() instanceof MyUserDetails ?
+                (MyUserDetails) auth.getPrincipal() : null;
+        System.out.println(userId);
+        if(userDetails.getUserId() != userId)
+            throw new AccessDeniedException("");
+
+
         List<Thread> threads = threadRepository.findAllByUserIdOrderByThreadId(userId);
         List<ThreadResponse> threadResponses = new ArrayList<>();
         threads.forEach((Thread thread)->{
+            threadResponses.add(new ThreadResponse(thread));
+        });
+        return threadResponses;
+    }
+
+    @Override
+    public List<ThreadResponse> getAllResponseByKeyword(String keyword) {
+        List<Thread> threads = threadRepository.findAllByKeyword(keyword);
+        List<ThreadResponse> threadResponses = new ArrayList<>();
+        threads.forEach(thread -> {
             threadResponses.add(new ThreadResponse(thread));
         });
         return threadResponses;
@@ -154,7 +171,7 @@ public class ThreadServiceImpl implements ThreadService{
             throw new AccessDeniedException("");
 
         //管理者権限を持っているユーザー、及び該当のスレッドを立てたユーザー、既にブロックリストへ追加ずみのユーザーはブロックリストに追加できない
-        if(securityUtil.isAdmin(userDetails.getAuthorities()) || thread.getUser().getUserId() == user.getUserId() ||
+        if(user.getRole().getName().equals("ADMIN") || thread.getUser().getUserId() == user.getUserId() ||
                 threadUtil.isUserIdExistInBlockedList(thread.getBlockedUsers() , user.getUserId()))
                     throw new RuntimeException("faild to add user into blocked list");
 

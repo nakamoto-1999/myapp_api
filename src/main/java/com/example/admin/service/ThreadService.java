@@ -12,7 +12,8 @@ public interface ThreadService {
 
     ThreadResponse createThread(Authentication auth , HttpServletRequest req, ThreadCreateRequest reqBody);
     List<ThreadResponse> getAllResponses();
-    List<ThreadResponse> getAllResponseByUserId(Long userId);
+    List<ThreadResponse> getAllResponseByUserId(Long userId , Authentication auth);
+    List<ThreadResponse> getAllResponseByKeyword(String keyword);
     ThreadResponse getResponseByThreadId(Long threadId);
     void concludeByThreadId(Long threadId , Authentication auth , ThreadConcludeRequest reqBody);
     void deleteByThreadId(Long threadId , Authentication auth );

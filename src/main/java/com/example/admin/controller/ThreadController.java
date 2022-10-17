@@ -45,6 +45,16 @@ public class ThreadController {
         return ResponseEntity.ok(threadService.getAllResponses());
     }
 
+    @GetMapping("/auth/user/{userId}/thread")
+    ResponseEntity<?> getAllThreadByUserId(@PathVariable Long userId , Authentication auth){
+        return ResponseEntity.ok(threadService.getAllResponseByUserId(userId , auth));
+    }
+
+    @GetMapping("/thread/search")
+    ResponseEntity<?> getAllThreadsByKeyword(@RequestParam(value = "keyword") String keyword){
+        return ResponseEntity.ok(threadService.getAllResponseByKeyword(keyword));
+    }
+
     @GetMapping("/thread/{threadId}")
     ResponseEntity<?> getThreadByThreadId(@PathVariable Long threadId){
         ThreadResponse response = threadService.getResponseByThreadId(threadId);

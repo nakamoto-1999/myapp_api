@@ -27,7 +27,7 @@ public class ThreadResponse {
     private ColorResponse concludedColor;
     private String conclusionReason;
     private List<PostResponse> posts = new ArrayList<>();
-    private List<BlockedUserResponse> blockedUsers = new ArrayList<>();
+    private List<UserResponse> blockedUsers = new ArrayList<>();
     private UserResponse user;
     private Timestamp createdAt;
     private Timestamp updatedAt;
@@ -73,7 +73,7 @@ public class ThreadResponse {
         if(isDeleted)return;
         blockedUsers.forEach(blockedUserOfThread -> {
             //System.out.println(blockedUserOfThread.getUser().getName());
-            this.blockedUsers.add(new BlockedUserResponse(blockedUserOfThread));
+            this.blockedUsers.add(new UserResponse(blockedUserOfThread.getUser()));
         });
         //this.blockedUsers.forEach(blockedUserResponse -> {
         //    System.out.println(blockedUserResponse.user.getName());
