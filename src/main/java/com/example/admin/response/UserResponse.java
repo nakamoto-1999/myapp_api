@@ -25,7 +25,7 @@ public class UserResponse {
     public UserResponse(User user){
         if(user == null)return;
         this.userId = user.getUserId();
-        this.name = user.getName();
+        this.name = user.isDeleted() ? "（削除済みユーザー）" : user.getName();
         this.role = user.getRole();
         this.isPermitted = user.isPermitted();
         this.isDeleted = user.isDeleted();

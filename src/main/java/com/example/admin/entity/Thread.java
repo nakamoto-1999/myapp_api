@@ -67,6 +67,7 @@ public class Thread {
     List<Post> posts = new ArrayList<>();
 
     @OneToMany(mappedBy = "thread" , cascade = CascadeType.ALL , orphanRemoval = true)
+    @OrderBy("user.userId")
     List<BlockedUserOfThread> blockedUsers = new ArrayList<>();
 
 }

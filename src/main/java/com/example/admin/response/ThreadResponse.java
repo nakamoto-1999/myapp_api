@@ -37,7 +37,7 @@ public class ThreadResponse {
     public ThreadResponse(Thread thread){
 
         if(thread == null)return;
-        isDeleted = thread.isDeleted() || thread.getUser().isDeleted();
+        isDeleted = thread.isDeleted();
         threadId = thread.getThreadId();
         createdAt = thread.getCreatedAt();
         updatedAt = thread.getUpdatedAt();
