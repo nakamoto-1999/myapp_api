@@ -207,13 +207,15 @@ public class ThreadServiceImpl implements ThreadService{
         //IDからスレッドを取得
         Thread thread = threadLogic.getEntityByThreadId(threadId);
 
-        if(!securityUtil.isAuthIdEqualPathId(userDetails.getUserId() , thread.getUser().getUserId())
+        //認証を受けたユーザーが、Adminでもなくスレッドを立てたユーザーとも一致しない場合は、アクセス拒否
+        if(userDetails.getUserId() != thread.getUser().getUserId()
                 && !securityUtil.isAdmin(userDetails.getAuthorities()))
                     throw new AccessDeniedException("");
 
-        //isConcludedもしくはisDeletedがtrueの場合は、以下を実行しない
-        if(thread.isClosed() || thread.isConcluded() || thread.isDeleted())
-            throw new RuntimeException("faild to delete");
+        //認証を受けたユーザーがAdminではなく、isCloed、isConcludedのどちらかがtrue、またはisDeletedがtrueの場合は、例外を投げる
+        if( !securityUtil.isAdmin(userDetails.getAuthorities())
+            && (thread.isClosed() || thread.isConcluded() ) || thread.isDeleted())
+                throw new RuntimeException("faild to delete");
 
         thread.setDeleted(true);
         threadRepository.save(thread);

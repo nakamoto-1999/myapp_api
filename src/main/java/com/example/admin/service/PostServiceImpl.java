@@ -150,15 +150,15 @@ public class PostServiceImpl implements PostService{
         //IDからpostを取得
         Post post = this.getEntityByPostId(postId);
 
-        /*認証を受けたユーザーが、Postを投稿したユーザーと一致せず、かつユーザーがADMINではないかつ、認証を受けたユーザーが、ポストが投稿された
-        スレッドのスレ主と一致しない場合はアクセス拒否
+        /*認証を受けたユーザーのRoleが、Adminでない場合はアクセス拒否
         */
-        if(userDetails.getUserId() != post.getUser().getUserId()
-                && !securityUtil.isAdmin(userDetails.getAuthorities()))
-                        throw new AccessDeniedException("");
+        if(!securityUtil.isAdmin(userDetails.getAuthorities()))
+            throw new AccessDeniedException("");
 
-        if(post.getThread().isClosed() || post.getThread().isConcluded() || post.isDeleted())
+        //認証を受けたユーザーがAdminではなく、isCloed、isConcludedのどちらかがtrue、またはisDeletedがtrueの場合は、例外を投げる
+        if(post.isDeleted())
             throw new RuntimeException("faild to delete");
+
         post.setDeleted(true);
         postRepository.save(post);
     }

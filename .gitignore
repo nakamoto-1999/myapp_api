@@ -38,4 +38,4 @@ out/
 
 #*.properties
 
-env
+.env
