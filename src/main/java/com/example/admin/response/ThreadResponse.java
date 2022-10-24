@@ -1,5 +1,6 @@
 package com.example.admin.response;
 
+import com.example.admin.Constant;
 import com.example.admin.entity.BlockedUserOfThread;
 import com.example.admin.entity.Post;
 import com.example.admin.entity.Thread;
@@ -83,7 +84,7 @@ public class ThreadResponse {
     private Timestamp getFinishAt(Timestamp timestamp){
         Calendar cal = Calendar.getInstance();
         cal.setTimeInMillis(timestamp.getTime());
-        cal.add(Calendar.HOUR , 12);
+        cal.add(Calendar.DAY_OF_MONTH , Constant.THREAD_LIFESPAN_DAYS);
         return new Timestamp(cal.getTime().getTime());
     }
 

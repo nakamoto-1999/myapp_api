@@ -1,5 +1,6 @@
 package com.example.admin.utility;
 
+import com.example.admin.Constant;
 import com.example.admin.entity.BlockedUserOfThread;
 import com.example.admin.entity.Thread;
 import org.springframework.stereotype.Component;
@@ -22,7 +23,8 @@ public class ThreadUtilImpl implements ThreadUtil {
 
         //スレッドが立てられた時刻と現在時刻を比較して、duraMin分経過していた場合
         final LocalDateTime threadCreatedAt = thread.getCreatedAt().toLocalDateTime();
-        return Duration.between( threadCreatedAt , LocalDateTime.now() ).toHours() >= 12;
+        return Duration.between( LocalDateTime.now() , threadCreatedAt ).toDays()
+                >= Constant.THREAD_LIFESPAN_DAYS;
 
     }
 
