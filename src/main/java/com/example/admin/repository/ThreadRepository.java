@@ -26,7 +26,7 @@ public interface ThreadRepository extends JpaRepository<Thread, Long> {
             value = "UPDATE thread SET thread.is_closed = 1 " +
                     "WHERE thread.is_closed = 0 AND ( " +
                         "( SELECT COUNT(post.post_id) FROM post WHERE post.thread_id = thread.thread_id ) >= 1000 OR " +
-                        "DATEDIFF(NOW() , thread.created_at)  >= 30" +
+                        "DATEDIFF(NOW() , thread.created_at)  >= 365" +
                     ")"
     )
     @Modifying

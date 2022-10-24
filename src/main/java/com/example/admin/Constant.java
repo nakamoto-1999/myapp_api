@@ -4,6 +4,6 @@ import java.time.Duration;
 
 public class Constant {
 
-    public static final Integer THREAD_LIFESPAN_DAYS = 30;
+    public static final Integer THREAD_LIFESPAN_DAYS = 365;
 
 }
