@@ -8,12 +8,6 @@
 <h3>URL</h3>
 <div>https://www.sosho-gokko.kn-portfolio.net</div>
 
-<h3>管理者アカウント</h3>
-<ul>
-  <li>メールアドレス：kn0622@kn-portfolio.net</li>
-  <li>e6wQK8Ak</li>
-</ul>
-
 <h3>テストアカウント</h3>
 <ul>
   <li>メールアドレス：taro1999@kn-portfolio.net</li>
