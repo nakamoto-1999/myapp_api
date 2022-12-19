@@ -46,7 +46,7 @@
 <div>
   <p>
     スレッドの投稿は、トップページ右下にある+ボタンの押下によって出現するフォームから行います。<br/>
-    フォームの入力項目は、<strong>議題の概要</strong>、<strong>議題の争点</strong>、<strong>争点に対する赤と青の立場</strong>となってます。</strong>
+    フォームの項目は、<strong>議題の概要</strong>、<strong>争点</strong>、<strong>争点に対する赤と青の立場</strong>となってます。</strong>
   </p>
   <p>
    （例）<br>
@@ -60,8 +60,8 @@
 
 <h4>レス返信</h4>
 <div>
-  レスの返信は、各スレッドの下部フォームから行います。<br>
-  フォームには、スレッドに設定された議題に対する自分の立場をセレクトし、主張を入力します。
+  レスの返信は、各スレッド下部のフォームから行います。<br>
+  フォームの項目は、<strong>議題に対する自分の立場</strong>と<strong>主張</strong>です。
 </div>
 <div><video controls src=https://user-images.githubusercontent.com/83113782/208532608-4d25260d-24f7-405c-a35e-f80f4fdc2062.mp4 /></div>
 
@@ -94,8 +94,7 @@
 
 <h4>管理者ユーザーによるスレッド・レスの削除</h4>
 <div>管理者ユーザーは、スレッド及びレスの削除を行うことができます。</div>
-<div><video src=https://user-images.githubusercontent.com/83113782/208539709-66c839f4-95cc-42ec-be11-3edde3a13f13.mp4/></div>
-
+<div><video src=https://user-images.githubusercontent.com/83113782/208544837-37da62a8-073b-4c0b-8383-36421fb4dee2.mp4 /></div>
 
 <h3>改善点</h3>
 <div>
