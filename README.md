@@ -56,22 +56,22 @@
     青のポジション：反対
   </p>
 </div>
-<div><video controls src=https://user-images.githubusercontent.com/83113782/208531440-bb16f9da-e787-4b79-9330-12ffea53c131.mp4 /></div>
+<div><video controls muted src=https://user-images.githubusercontent.com/83113782/208531440-bb16f9da-e787-4b79-9330-12ffea53c131.mp4 /></div>
 
 <h4>レス返信</h4>
 <div>
   レスの返信は、各スレッド下部のフォームから行います。<br>
   フォームの項目は、<strong>議題に対する自分の立場</strong>と<strong>主張</strong>です。
 </div>
-<div><video controls src=https://user-images.githubusercontent.com/83113782/208532608-4d25260d-24f7-405c-a35e-f80f4fdc2062.mp4 /></div>
+<div><video controls muted src=https://user-images.githubusercontent.com/83113782/208532608-4d25260d-24f7-405c-a35e-f80f4fdc2062.mp4 /></div>
 
 <h4>スレッド主による特定のユーザーのブロック</h4>
 <div>
   スレッド主は、各レスに表示されるブロックボタンから、特定のユーザーをブロックすることができます。
 </div>
-<div><video src=https://user-images.githubusercontent.com/83113782/208533404-2aedff8a-52b4-467d-8acd-f4d956864c34.mp4 /></div>
+<div><video controls muted src=https://user-images.githubusercontent.com/83113782/208533404-2aedff8a-52b4-467d-8acd-f4d956864c34.mp4 /></div>
 <div>ブロックされたユーザーは、当該スレへのレスの返信ができなくなります。</div>
-<div><video src=https://user-images.githubusercontent.com/83113782/208537606-ebc58a39-72a1-414c-9030-ee61fb7c26b8.mp4 /></div>
+<div><video controls muted src=https://user-images.githubusercontent.com/83113782/208537606-ebc58a39-72a1-414c-9030-ee61fb7c26b8.mp4 /></div>
 
 <h4>スレッド主による評決</h4>
 <div>
@@ -79,22 +79,22 @@
   評決に至った理由を添えることも可能です。</br>
   評決を下されたスレッドは、自動的に閉鎖されます。
 </div>
-<div><video src=https://user-images.githubusercontent.com/83113782/208537803-86300c07-0356-41a2-ad8d-afbdddd882a3.mp4/></div>
+<div><video controls muted src=https://user-images.githubusercontent.com/83113782/208537803-86300c07-0356-41a2-ad8d-afbdddd882a3.mp4/></div>
 
 <h4>スレッド検索</h4>
 <div>上部検索フォームから、キーワードによるスレッド検索を行うことができます。</div>
-<div><video src=https://user-images.githubusercontent.com/83113782/208538929-c491e05a-e929-4ee5-a574-12abeb8cf5f7.mp4 /></div>
+<div><video controls muted src=https://user-images.githubusercontent.com/83113782/208538929-c491e05a-e929-4ee5-a574-12abeb8cf5f7.mp4 /></div>
 
 <h4>管理者ユーザーによる特定のユーザーに対する一部機能の利用停止処分</h4>
 <div>管理者ユーザーは、右上のAdminボタンから、特定のユーザーに対する一部機能の利用停止処分を下すことができます。</div>
-<div><video src=https://user-images.githubusercontent.com/83113782/208539497-0d46a6a9-51de-4f45-899e-7ccfc7ac0639.mp4 /></div>
+<div><video controls muted src=https://user-images.githubusercontent.com/83113782/208539497-0d46a6a9-51de-4f45-899e-7ccfc7ac0639.mp4 /></div>
 
 <div>当該処分を下されたユーザーは、スレッドの投稿やレスの返信ができなくなります。</div>
-<div><video src=https://user-images.githubusercontent.com/83113782/208540061-ea3ed2c1-d6c7-4a78-9463-9db9e4d773b0.mp4 /></div>
+<div><video controls muted src=https://user-images.githubusercontent.com/83113782/208540061-ea3ed2c1-d6c7-4a78-9463-9db9e4d773b0.mp4 /></div>
 
 <h4>管理者ユーザーによるスレッド・レスの削除</h4>
 <div>管理者ユーザーは、スレッド及びレスの削除を行うことができます。</div>
-<div><video src=https://user-images.githubusercontent.com/83113782/208544837-37da62a8-073b-4c0b-8383-36421fb4dee2.mp4 /></div>
+<div><video controls muted src=https://user-images.githubusercontent.com/83113782/208544837-37da62a8-073b-4c0b-8383-36421fb4dee2.mp4 /></div>
 
 <h3>改善点</h3>
 <div>
