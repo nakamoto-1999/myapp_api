@@ -40,15 +40,32 @@
 <h3>使用手順</h3>
 
 <h4>スレッド投稿</h4>
-<div>スレッドの投稿は、トップページ右下の+ボタンから行います。</div>
+<div>
+  <p>
+    スレッドの投稿は、トップページ右下の+ボタンの押下によって出現するフォームから行います。<br/>
+    フォームの入力項目は、<strong>議題の概要</strong>、<strong>議題の争点</strong>、<strong>争点に対する赤と青の立場を入力します。</strong>
+  </p>
+  <p>
+   （例）<br>
+    議題の概要：〇〇について<br>
+    争点：賛成か反対か<br>
+    赤：賛成<br>
+    青：反対
+  </p>
+</div>
 <div><video controls src=https://user-images.githubusercontent.com/83113782/208531440-bb16f9da-e787-4b79-9330-12ffea53c131.mp4 /></div>
 
 <h4>レス返信</h4>
-<div>レスの返信は、各スレッドの下部フォームから行います。</div>
+<div>
+  レスの返信は、各スレッドの下部フォームから行います。<br>
+  フォームには、スレッドに設定された議題に対する自分の立場をセレクトし、主張を入力します。
+</div>
 <div><video controls src=https://user-images.githubusercontent.com/83113782/208532608-4d25260d-24f7-405c-a35e-f80f4fdc2062.mp4 /></div>
 
 <h4>スレッド主による特定のユーザーへのブロック</h4>
-<div>スレッド主は、特定のレスをブロックすることができます。</div>
+<div>
+  スレッド主は、各レスに表示されるブロックボタンから、特定のユーザーをブロックすることができます。
+</div>
 <div><video src=https://user-images.githubusercontent.com/83113782/208533404-2aedff8a-52b4-467d-8acd-f4d956864c34.mp4 /></div>
 <div>ブロックされたユーザーは、当該スレへのレスの返信ができなくなります。</div>
 <div><video src=https://user-images.githubusercontent.com/83113782/208537606-ebc58a39-72a1-414c-9030-ee61fb7c26b8.mp4 /></div>
@@ -56,6 +73,7 @@
 <h4>スレッド主による評決</h4>
 <div>
   スレッド主は、レスの返信フォームの最下部から評決を下すことができます。<br/>
+  評決に至った理由を添えることも可能です。</br>
   評決を下されたスレッドは、自動的に閉鎖されます。
 </div>
 <div><video src=https://user-images.githubusercontent.com/83113782/208537803-86300c07-0356-41a2-ad8d-afbdddd882a3.mp4/></div>
