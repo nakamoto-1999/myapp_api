@@ -46,14 +46,14 @@
 <div>
   <p>
     スレッドの投稿は、トップページ右下にある+ボタンの押下によって出現するフォームから行います。<br/>
-    フォームの項目は、<strong>議題の概要</strong>、<strong>争点</strong>、<strong>争点に対する赤と青の立場</strong>となってます。</strong>
+    フォームの項目は、<strong>議題の概要</strong>、<strong>争点</strong>、<strong>争点に対する赤と青のポジション</strong>となってます。
   </p>
   <p>
    （例）<br>
     議題の概要：〇〇について<br>
     争点：賛成か反対か<br>
-    赤：賛成<br>
-    青：反対
+    赤のポジション：賛成<br>
+    青のポジション：反対
   </p>
 </div>
 <div><video controls src=https://user-images.githubusercontent.com/83113782/208531440-bb16f9da-e787-4b79-9330-12ffea53c131.mp4 /></div>
