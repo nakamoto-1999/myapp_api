@@ -37,12 +37,15 @@
   <li>管理者ユーザーによる特定のユーザーに対する一部の機能の利用停止処分</li>
 </ul>
 
+<h3>使用技術</h3>
+<div>Java、Spring Boot、JavaScript、React.js、MySQL、AWS</div>
+
 <h3>使用手順</h3>
 
 <h4>スレッド投稿</h4>
 <div>
   <p>
-    スレッドの投稿は、トップページ右下の+ボタンの押下によって出現するフォームから行います。<br/>
+    スレッドの投稿は、トップページ右下にある+ボタンの押下によって出現するフォームから行います。<br/>
     フォームの入力項目は、<strong>議題の概要</strong>、<strong>議題の争点</strong>、<strong>争点に対する赤と青の立場を入力します。</strong>
   </p>
   <p>
@@ -79,11 +82,11 @@
 <div><video src=https://user-images.githubusercontent.com/83113782/208537803-86300c07-0356-41a2-ad8d-afbdddd882a3.mp4/></div>
 
 <h4>スレッド検索</h4>
-<div>上部検索フォームから、キーワドによるスレッド検索を行うことができます。</div>
+<div>上部検索フォームから、キーワードによるスレッド検索を行うことができます。</div>
 <div><video src=https://user-images.githubusercontent.com/83113782/208538929-c491e05a-e929-4ee5-a574-12abeb8cf5f7.mp4 /></div>
 
 <h4>管理者ユーザーによる特定のユーザーに対する一部機能の利用停止処分</h4>
-<div>管理者ユーザーは、特定のユーザーに対する一部機能の利用停止処分を下すことができます。</div>
+<div>管理者ユーザーは、右上のAdminボタンから、特定のユーザーに対する一部機能の利用停止処分を下すことができます。</div>
 <div><video src=https://user-images.githubusercontent.com/83113782/208539497-0d46a6a9-51de-4f45-899e-7ccfc7ac0639.mp4 /></div>
 
 <div>当該処分を下されたユーザーは、スレッドの投稿やレスの返信ができなくなります。</div>
@@ -93,15 +96,13 @@
 <div>管理者ユーザーは、スレッド及びレスの削除を行うことができます。</div>
 <div><video src=https://user-images.githubusercontent.com/83113782/208539709-66c839f4-95cc-42ec-be11-3edde3a13f13.mp4/></div>
 
-<h3>使用技術</h3>
-<div>Java、Spring Boot、JavaScript、React.js、AWS</div>
 
 <h3>改善点</h3>
 <div>
   <ul>
     <li>レスに画像ファイルを添付する機能を追加したい。</li>
     <li>評決済みのスレッドと未評決のスレッドを分けて表示させたい。</li>
-    <li>レスアンカー機能を追加したい。</li>
+    <li>レス同士でやり取りを行うためのレスアンカーを追加したい。</li>
   </ul>
 </div>
 
