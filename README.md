@@ -40,6 +40,9 @@
 <h3>使用技術</h3>
 <div>Java、Spring Boot、JavaScript、React.js、MySQL、AWS</div>
 
+<h3>フロント部分</h3>
+<div>https://github.com/nakano2024/myapp_front</div>
+
 <h3>使用手順</h3>
 
 <h4>スレッド投稿</h4>
