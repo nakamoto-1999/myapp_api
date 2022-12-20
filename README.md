@@ -49,7 +49,7 @@
 <div>
   <p>
     スレッドの投稿は、トップページ右下にある+ボタンの押下によって出現するフォームから行います。<br/>
-    フォームの項目は、<strong>議題の概要</strong>、<strong>争点</strong>、争点に対する<strong>赤と青のポジション</strong>となってます。
+    フォームの項目は、<strong>議題の概要</strong>、<strong>争点</strong>、争点に対する<strong>赤と青のポジション</strong>です。
   </p>
   <p>
    （例）<br>
