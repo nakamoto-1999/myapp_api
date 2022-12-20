@@ -65,7 +65,7 @@
 <h4>レス返信</h4>
 <div>
   レスの返信は、各スレッド下部のフォームから行います。<br>
-  フォームの項目は、<strong>議題に対する自分の立場</strong>と<strong>主張</strong>です。
+  フォームの項目は、議題に対する<strong>自分のポジション</strong>と<strong>主張内容</strong>です。
 </div>
 <div><video controls muted src=https://user-images.githubusercontent.com/83113782/208532608-4d25260d-24f7-405c-a35e-f80f4fdc2062.mp4 /></div>
 
