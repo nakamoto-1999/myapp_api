@@ -14,6 +14,9 @@
   <li>パスワード：P4ifRwQs</li>
 </ul>
 
+<h3>フロント部分</h3>
+<div>https://github.com/nakano2024/myapp_front</div>
+
 <h3>制作背景</h3>
 <div>一般的なコミュニティで疎外されがちなユーザー同士の論争を、専ら建設的に行えるようなサービスを提供したいという思いから制作に至りました。</div>
 
@@ -39,9 +42,6 @@
 
 <h3>使用技術</h3>
 <div>Java、Spring Boot、JavaScript、React.js、MySQL、AWS</div>
-
-<h3>フロント部分</h3>
-<div>https://github.com/nakano2024/myapp_front</div>
 
 <h3>使用手順</h3>
 
