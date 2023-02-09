@@ -1,7 +1,7 @@
 package com.example.admin.response;
 
 import com.example.admin.entity.BlockedUserOfThread;
-import lombok.AllArgsConstructor;
+import com.example.admin.entity.User;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 

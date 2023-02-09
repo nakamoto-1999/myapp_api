@@ -58,14 +58,7 @@ public class ThreadServiceImpl implements ThreadService{
 
 
     @Override
-    public ThreadResponse createThread(@NotNull Authentication auth,@NotNull HttpServletRequest req,
-                                       @NotNull ThreadCreateRequest reqBody) {
-
-        @NotNull MyUserDetails userDetails =
-                auth.getPrincipal() instanceof MyUserDetails ? (MyUserDetails) auth.getPrincipal() :null;
-
-        //許可されていないユーザーの場合は、アクセス拒否
-        if(!userDetails.isPermitted()) throw new AccessDeniedException("");
+    public ThreadResponse createThread(@NotNull HttpServletRequest req, @NotNull ThreadCreateRequest reqBody) {
 
         Thread thread = new Thread();
         thread.setOverview(reqBody.getOverview());
@@ -74,9 +67,8 @@ public class ThreadServiceImpl implements ThreadService{
         thread.setBlue(reqBody.getBlue());
         thread.setClosed(false);
         thread.setConcluded(false);
-        User user = userLogic.getEntitiyByUserId(userDetails.getUserId());
+        User user = userLogic.getEntity(req);
         thread.setUser(user);
-        thread.setIp(req.getRemoteAddr());
         thread.setDeleted(false);
         thread.setCreatedAt(timestampUtil.getNow());
         Thread createdThread = threadRepository.save(thread);
@@ -159,21 +151,21 @@ public class ThreadServiceImpl implements ThreadService{
     }
 
     @Override
-    public void blockUser(Long threadId, Long userId,@NotNull Authentication auth) {
-        @NotNull MyUserDetails userDetails = auth.getPrincipal() instanceof MyUserDetails ?
-                (MyUserDetails) auth.getPrincipal() : null;
+    public void blockUser(Long threadId, Long userId,@NotNull HttpServletRequest req) {
 
         //スレッドエンティティと、ブロック対象のユーザーエンティティを取得
         Thread thread = threadLogic.getEntityByThreadId(threadId);
-        User user = userLogic.getEntitiyByUserId(userId);
+        User user = userLogic.getEntityByUserId(userId);
 
-        if(userDetails.getUserId() != thread.getUser().getUserId())
+        //リクエストを投げたユーザーとスレッドを立てたユーザーのIPアドレスが一致
+        if(userLogic.getEntityByIp(req.getRemoteAddr()).getUserId() != thread.getUser().getUserId())
             throw new AccessDeniedException("");
 
-        //管理者権限を持っているユーザー、及び該当のスレッドを立てたユーザー、既にブロックリストへ追加ずみのユーザーはブロックリストに追加できない
-        if(user.getRole().getName().equals("ADMIN") || thread.getUser().getUserId() == user.getUserId() ||
-                threadUtil.isUserIdExistInBlockedList(thread.getBlockedUsers() , user.getUserId()))
-                    throw new RuntimeException("faild to add user into blocked list");
+        //管理者でログインしているユーザー、及び該当のスレッドを立てたユーザー、既にブロックリストへ追加ずみのユーザーはブロックリストに追加できない
+        if(thread.getUser().getUserId() == user.getUserId() ||
+                threadUtil.isUserIdExistInBlockedList(thread.getBlockedUsers() , user.getUserId())) {
+            throw new RuntimeException("faild to add user into blocked list");
+        }
 
         //ユーザーをブロックリストへ追加
         BlockedUserOfThread blockedUser = new BlockedUserOfThread(thread , user);
@@ -182,40 +174,37 @@ public class ThreadServiceImpl implements ThreadService{
     }
 
     @Override
-    public void unblockUser(Long threadId , Long userId ,@NotNull Authentication auth){
-        @NotNull MyUserDetails userDetails = auth.getPrincipal() instanceof MyUserDetails ?
-                (MyUserDetails) auth.getPrincipal() : null;
+    public void unblockUser(Long threadId , Long userId ,@NotNull HttpServletRequest req){
 
         BlockedUserOfThread blockedUser
                 = blockedUserOfThreadRepository.findById(new PkOfThreadAndUser(threadId , userId))
                 .orElseThrow(() -> new IllegalArgumentException());
 
-        //ブロックユーザーを持っているスレッドのスレ主でなければ、アクセス拒否
-        if(userDetails.getUserId() != blockedUser.getThread().getUser().getUserId())
+        //スレッドのスレ主でなければ、アクセス拒否
+        if(userLogic.getEntityByIp(req.getRemoteAddr()).getUserId() != threadId){
             throw new AccessDeniedException("");
+        }
         blockedUserOfThreadRepository.delete(blockedUser);
 
     }
 
     @Override
-    public void deleteByThreadId(Long threadId ,@NotNull Authentication auth) {
-
-        //スレッドを立てたユーザーと、認証を受けたユーザーが一致しなければアクセス拒否
-        @NotNull MyUserDetails userDetails =
-                auth.getPrincipal() instanceof MyUserDetails ? (MyUserDetails) auth.getPrincipal() :null;
+    public void deleteByThreadId(Long threadId ,@NotNull HttpServletRequest req, @NotNull Authentication auth) {
 
         //IDからスレッドを取得
         Thread thread = threadLogic.getEntityByThreadId(threadId);
 
-        //認証を受けたユーザーが、Adminでもなくスレッドを立てたユーザーとも一致しない場合は、アクセス拒否
-        if(userDetails.getUserId() != thread.getUser().getUserId()
-                && !securityUtil.isAdmin(userDetails.getAuthorities()))
-                    throw new AccessDeniedException("");
+        //ユーザーが、認証を受けておらず、スレッドを立てたユーザーとも一致しない場合は、アクセス拒否
+        if(userLogic.getEntityByIp(req.getRemoteAddr()).getUserId() != thread.getUser().getUserId() &&
+                auth == null) {
+            throw new AccessDeniedException("");
+        }
 
         //認証を受けたユーザーがAdminではなく、isCloed、isConcludedのどちらかがtrue、またはisDeletedがtrueの場合は、例外を投げる
-        if( !securityUtil.isAdmin(userDetails.getAuthorities())
-            && (thread.isClosed() || thread.isConcluded() ) || thread.isDeleted())
-                throw new RuntimeException("faild to delete");
+        if(auth != null
+            && (thread.isClosed() || thread.isConcluded() ) || thread.isDeleted()) {
+            throw new RuntimeException("faild to delete");
+        }
 
         thread.setDeleted(true);
         threadRepository.save(thread);

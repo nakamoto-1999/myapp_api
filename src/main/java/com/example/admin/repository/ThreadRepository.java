@@ -20,7 +20,7 @@ public interface ThreadRepository extends JpaRepository<Thread, Long> {
             "OR th.user.name LIKE %?1% ORDER BY th.createdAt DESC")
     List<Thread> findAllByKeyword(String keyword);
 
-    //レス数が1000以上、レス数が0かつスレッド作成後の60分経過、最新のレス投稿後60分経過しているスレッドのis_deletedを1にする
+    //レス数が1000以上、レス数が0かつスレッド作成後の60分経過、最新のレス投稿後365日経過しているスレッドのis_deletedを1にする
     @Query(
             nativeQuery = true,
             value = "UPDATE thread SET thread.is_closed = 1 " +
@@ -34,6 +34,6 @@ public interface ThreadRepository extends JpaRepository<Thread, Long> {
 
     //閉鎖されていないスレッドを集計する
     @Query(value = "SELECT COUNT(th) FROM Thread th WHERE th.isClosed = 0")
-    Long countNotDeletedThreads();
+    Long countNotClosedThreads();
 
 }

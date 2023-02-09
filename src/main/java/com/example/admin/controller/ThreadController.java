@@ -26,7 +26,7 @@ public class ThreadController {
 
     @PostMapping("/auth/thread/create")
     ResponseEntity<?> createThread(HttpServletRequest req, Authentication auth , @Validated @RequestBody ThreadCreateRequest reqBody){
-        ThreadResponse response = threadService.createThread(auth , req , reqBody);
+        ThreadResponse response = threadService.createThread( req , reqBody);
         return ResponseEntity.ok(response);
     }
 

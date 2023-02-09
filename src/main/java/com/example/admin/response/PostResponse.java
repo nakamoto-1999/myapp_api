@@ -2,13 +2,10 @@ package com.example.admin.response;
 
 import com.example.admin.entity.Post;
 import com.example.admin.entity.User;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.sql.Time;
 import java.sql.Timestamp;
-import java.util.Date;
 
 @Data
 @NoArgsConstructor
@@ -31,7 +28,6 @@ public class PostResponse {
         updatedAt = post.getUpdatedAt();
         postId = post.getPostId();
         if(isDeleted)return;
-        ip = post.getIp();
         user = new UserResponse(post.getUser());
         color = new ColorResponse(post.getColor());
         content = post.getContent();

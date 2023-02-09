@@ -1,7 +1,8 @@
 package com.example.admin.security;
 
+import com.example.admin.entity.Admin;
 import com.example.admin.entity.User;
-import com.example.admin.repository.UserRepository;
+import com.example.admin.repository.AdminRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -11,7 +12,7 @@ import org.springframework.stereotype.Service;
 public class MyUserDetailsServiceImpl implements MyUserDetailsService {
 
     @Autowired
-    UserRepository userRepository;
+    AdminRepository adminRepository;
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
@@ -20,12 +21,12 @@ public class MyUserDetailsServiceImpl implements MyUserDetailsService {
             throw new UsernameNotFoundException(email + " Not Found!");
         }
 
-        User user = userRepository.findByEmail(email).orElse(null);
-        if(user == null){
+        Admin admin = adminRepository.findByEmail(email).orElse(null);
+        if(admin == null){
             throw new UsernameNotFoundException(email + " Not Found!");
         }
 
-        return new MyUserDetailsImpl(user);
+        return new MyUserDetailsImpl(admin);
     }
 
     @Override
@@ -35,12 +36,12 @@ public class MyUserDetailsServiceImpl implements MyUserDetailsService {
             throw new UsernameNotFoundException(userId + "Not Found");
         }
 
-        User user = this.userRepository.findById(userId).orElse(null);
-        if(user == null){
+        Admin admin = this.adminRepository.findById(userId).orElse(null);
+        if(admin == null){
             throw new UsernameNotFoundException(userId + "Not Found");
         }
 
-        return new MyUserDetailsImpl(user);
+        return new MyUserDetailsImpl(admin);
     }
 
 }

@@ -51,9 +51,6 @@ public class Thread {
     @JoinColumn(name = "user_id")
     User user;
 
-    @Column(name = "ip")
-    String ip;
-
     @Column(name = "is_deleted")
     boolean isDeleted;
 

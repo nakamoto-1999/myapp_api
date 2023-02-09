@@ -4,7 +4,7 @@ import com.example.admin.entity.Post;
 import com.example.admin.entity.Thread;
 import com.example.admin.logic.ColorLogic;
 import com.example.admin.logic.ThreadLogic;
-import com.example.admin.logic.UserLogic;
+import com.example.admin.logic.AdminLogic;
 import com.example.admin.repository.PostRepository;
 import com.example.admin.request.PostCreateRequest;
 import com.example.admin.response.PostResponse;
@@ -40,7 +40,7 @@ public class PostServiceImpl implements PostService{
     ThreadUtil threadUtil;
 
     @Autowired
-    UserLogic userLogic;
+    AdminLogic userLogic;
 
     @Autowired
     ThreadLogic threadLogic;

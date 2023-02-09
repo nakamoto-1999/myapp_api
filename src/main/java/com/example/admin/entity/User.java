@@ -30,20 +30,8 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long userId;
 
-    @Column(name = "name")
-    private String name;
-
-    @Column(name = "email")
-    private String email;
-
-    @Column(name = "password")
-    private String password;
-
-    @Column(name = "is_permitted")
-    private boolean isPermitted;
-
-    @Column(name = "is_deleted")
-    private boolean isDeleted;
+    @Column(name = "ip")
+    private String ip;
 
     @OneToMany(mappedBy = "user" , cascade = CascadeType.ALL , orphanRemoval = true)
     @Column(insertable = false , updatable = false)
@@ -53,9 +41,8 @@ public class User {
     @Column(insertable = false , updatable = false)
     private List<Thread> threads;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "role_id")
-    private Role role;
+    @Column(name = "is_deleted")
+    private boolean isDeleted;
 
     @Column(name = "created_at")
     private Timestamp createdAt;

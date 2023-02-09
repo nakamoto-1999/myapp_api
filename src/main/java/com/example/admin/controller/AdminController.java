@@ -1,12 +1,12 @@
 package com.example.admin.controller;
 
 import com.example.admin.request.UserCreateUpdateRequest;
-import com.example.admin.response.UserResponse;
-import com.example.admin.response.UserResponseAuth;
+import com.example.admin.response.AdminResponse;
+import com.example.admin.response.AdminResponseAuth;
 import com.example.admin.service.ThreadService;
 import com.example.admin.utility.UserUtil;
 import com.example.admin.service.PostService;
-import com.example.admin.service.UserService;
+import com.example.admin.service.AdminService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -14,10 +14,10 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-public class UserController {
+public class AdminController {
 
     @Autowired
-    UserService userService;
+    AdminService userService;
 
     @Autowired
     PostService postService;
@@ -34,7 +34,7 @@ public class UserController {
         return ResponseEntity.ok(null);
     }
 
-    @PostMapping("/auth/admin/user/create")
+    @PostMapping("/admin/user/create")
     public ResponseEntity<?> createAdminUser(@Validated @RequestBody UserCreateUpdateRequest request){
         userService.createAdminUser(request);
         return ResponseEntity.ok(null);
@@ -48,13 +48,13 @@ public class UserController {
 
     @GetMapping("/user/{userId}")
     public ResponseEntity<?> getUserByUserId(@PathVariable Long userId){
-        UserResponse response = userService.getResponseByUserId(userId);
+        AdminResponse response = userService.getResponseByUserId(userId);
         return ResponseEntity.ok(response);
     }
 
     @GetMapping("/auth/user/{userId}")
     public ResponseEntity<?> getUserByUserIdForAuth(@PathVariable Long userId){
-        UserResponseAuth response = userService.getResponseAuthByUserId(userId);
+        AdminResponseAuth response = userService.getResponseAuthByUserId(userId);
         return ResponseEntity.ok(response);
     }
 

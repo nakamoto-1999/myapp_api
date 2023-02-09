@@ -1,5 +1,6 @@
 package com.example.admin.security;
 
+import com.example.admin.entity.Admin;
 import com.example.admin.entity.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
@@ -9,45 +10,45 @@ import java.util.Collection;
 
 public class MyUserDetailsImpl implements MyUserDetails {
 
-    private final User user;
+    private final Admin admin;
 
-    public MyUserDetailsImpl(User user){
-        this.user = user;
+    public MyUserDetailsImpl(Admin admin){
+        this.admin = admin;
     }
 
     @Override
     public Long getUserId(){
-        return this.user.getUserId();
+        return this.admin.getAdminId();
     }
 
     @Override
     public String getEmail() {
-        return this.user.getEmail();
+        return this.admin.getEmail();
     }
 
     @Override
     public boolean isPermitted(){
-        return user.isPermitted();
+        return true;
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return AuthorityUtils.createAuthorityList("ROLE_" + this.user.getRole().getName());
+        return AuthorityUtils.createAuthorityList("ROLE_GENERAL");
     }
 
     @Override
     public String getPassword() {
-        return user.getPassword();
+        return admin.getPassword();
     }
 
     @Override
     public String getUsername() {
-        return user.getName();
+        return admin.getName();
     }
 
     @Override
     public boolean isAccountNonExpired() {
-        return !user.isDeleted();
+        return !admin.isDeleted();
     }
 
     @Override

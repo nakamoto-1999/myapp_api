@@ -10,14 +10,14 @@ import java.util.List;
 
 public interface ThreadService {
 
-    ThreadResponse createThread(Authentication auth , HttpServletRequest req, ThreadCreateRequest reqBody);
+    ThreadResponse createThread(HttpServletRequest req, ThreadCreateRequest reqBody);
     List<ThreadResponse> getAllResponses();
     List<ThreadResponse> getAllResponseByUserId(Long userId , Authentication auth);
     List<ThreadResponse> getAllResponseByKeyword(String keyword);
     ThreadResponse getResponseByThreadId(Long threadId);
-    void concludeByThreadId(Long threadId , Authentication auth , ThreadConcludeRequest reqBody);
-    void deleteByThreadId(Long threadId , Authentication auth );
-    void blockUser(Long threadId ,Long userId , Authentication auth);
-    void unblockUser(Long threadId , Long userId , Authentication auth);
+    void concludeByThreadId(Long threadId , HttpServletRequest req , ThreadConcludeRequest reqBody);
+    void deleteByThreadId(Long threadId , HttpServletRequest req );
+    void blockUser(Long threadId ,Long userId , HttpServletRequest req);
+    void unblockUser(Long threadId , Long userId , HttpServletRequest req );
 
 }

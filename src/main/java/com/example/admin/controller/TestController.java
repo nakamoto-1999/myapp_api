@@ -1,14 +1,10 @@
 package com.example.admin.controller;
 
-import com.example.admin.entity.User;
 import com.example.admin.repository.RoleRepository;
-import com.example.admin.repository.UserRepository;
-import com.example.admin.security.MyUserDetails;
+import com.example.admin.repository.AdminRepository;
 import com.example.admin.utility.TimestampUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -16,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class TestController {
 
     @Autowired
-    UserRepository uRepository;
+    AdminRepository uRepository;
 
     @Autowired
     RoleRepository roleRepository;
