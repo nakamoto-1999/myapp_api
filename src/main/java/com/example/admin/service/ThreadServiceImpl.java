@@ -180,7 +180,7 @@ public class ThreadServiceImpl implements ThreadService{
                 = blockedUserOfThreadRepository.findById(new PkOfThreadAndUser(threadId , userId))
                 .orElseThrow(() -> new IllegalArgumentException());
 
-        //スレッドのスレ主でなければ、アクセス拒否
+        //スレ主でなければ、アクセス拒否
         if(userLogic.getEntityByIp(req.getRemoteAddr()).getUserId() != threadId){
             throw new AccessDeniedException("");
         }
