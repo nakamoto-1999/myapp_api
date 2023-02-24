@@ -12,7 +12,7 @@ public interface ThreadService {
 
     ThreadResponse createThread(HttpServletRequest req, ThreadCreateRequest reqBody);
     List<ThreadResponse> getAllResponses();
-    List<ThreadResponse> getAllResponseByUserId(Long userId , Authentication auth);
+    List<ThreadResponse> getAllResponseByRequest(HttpServletRequest req);
     List<ThreadResponse> getAllResponseByKeyword(String keyword);
     ThreadResponse getResponseByThreadId(Long threadId);
     void concludeByThreadId(Long threadId , HttpServletRequest req , ThreadConcludeRequest reqBody);

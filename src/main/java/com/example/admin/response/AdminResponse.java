@@ -12,21 +12,19 @@ import java.sql.Timestamp;
 @Data
 public class AdminResponse {
 
-    private Long userId;
+    private Long adminId;
     private String name;
-    private Role role;
-    private boolean isPermitted;
-    private boolean isDeleted;
+    private String email;
     private Timestamp createdAt;
     private Timestamp updatedAt;
 
     public AdminResponse(Admin admin){
         if(admin == null)return;
-        this.userId = admin.getAdminId();
-        this.name = admin.isDeleted() ? "（削除済みユーザー）" : admin.getName();
-        this.isDeleted = admin.isDeleted();
-        this.createdAt = admin.getCreatedAt();
-        this.updatedAt = admin.getUpdatedAt();
+        adminId = admin.getAdminId();
+        name = admin.getName();
+        email = admin.getEmail();
+        createdAt = admin.getCreatedAt();
+        updatedAt = admin.getUpdatedAt();
     }
 
 }

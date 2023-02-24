@@ -33,7 +33,7 @@ public class MyUserDetailsImpl implements MyUserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return AuthorityUtils.createAuthorityList("ROLE_GENERAL");
+        return AuthorityUtils.createAuthorityList("ROLE_ADMIN");
     }
 
     @Override
@@ -48,7 +48,7 @@ public class MyUserDetailsImpl implements MyUserDetails {
 
     @Override
     public boolean isAccountNonExpired() {
-        return !admin.isDeleted();
+        return true;
     }
 
     @Override

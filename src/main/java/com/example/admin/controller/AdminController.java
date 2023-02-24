@@ -2,7 +2,6 @@ package com.example.admin.controller;
 
 import com.example.admin.request.UserCreateUpdateRequest;
 import com.example.admin.response.AdminResponse;
-import com.example.admin.response.AdminResponseAuth;
 import com.example.admin.service.ThreadService;
 import com.example.admin.utility.UserUtil;
 import com.example.admin.service.PostService;
@@ -28,65 +27,49 @@ public class AdminController {
     @Autowired
     UserUtil securityUtil;
 
-    @PostMapping("/user/create")
-    public ResponseEntity<?> createGeneralUser(@Validated @RequestBody UserCreateUpdateRequest request){
-        userService.createGeneralUser(request);
-        return ResponseEntity.ok(null);
-    }
 
-    @PostMapping("/admin/user/create")
+    @PostMapping("/auth/admin/create")
     public ResponseEntity<?> createAdminUser(@Validated @RequestBody UserCreateUpdateRequest request){
-        userService.createAdminUser(request);
+        userService.createAdmin(request);
         return ResponseEntity.ok(null);
     }
 
-    @GetMapping("/auth/admin/user")
-    //一般ユーザーの場合はroleIdが2
-    public ResponseEntity<?> getAllUsers(){
+    @GetMapping("/auth/admin")
+    public ResponseEntity<?> getAllAdmins(){
         return ResponseEntity.ok(userService.getAllResponses());
     }
 
-    @GetMapping("/user/{userId}")
-    public ResponseEntity<?> getUserByUserId(@PathVariable Long userId){
-        AdminResponse response = userService.getResponseByUserId(userId);
+    @GetMapping("/auth/admin/{adminId}")
+    public ResponseEntity<?> getAdminByAdminId(@PathVariable Long adminId){
+        AdminResponse response = userService.getResponseByAdminId(adminId);
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/auth/user/{userId}")
-    public ResponseEntity<?> getUserByUserIdForAuth(@PathVariable Long userId){
-        AdminResponseAuth response = userService.getResponseAuthByUserId(userId);
-        return ResponseEntity.ok(response);
-    }
 
-    @GetMapping("auth/login/user")
+    @GetMapping("/auth/login/current")
     public ResponseEntity<?> getUserByAuth(Authentication auth){
         return ResponseEntity.ok(userService.getResponseByAuth(auth));
     }
 
-    @PutMapping("/auth/user/{userId}/update")
-    public ResponseEntity<?> updateByUserId(@PathVariable Long userId ,@Validated @RequestBody UserCreateUpdateRequest request, Authentication auth){
-        userService.updateByUserId(userId , auth , request);
+    @PutMapping("/auth/admin/{adminId}/update")
+    public ResponseEntity<?> updateByAdminId(@PathVariable Long adminId ,@Validated @RequestBody UserCreateUpdateRequest request, Authentication auth){
+        userService.updateByAdminId(adminId , auth , request);
         return ResponseEntity.ok(null);
     }
 
-    @PutMapping("/auth/admin/user/{userId}/switch-permit")
-    public ResponseEntity<?> validateByUserId(@PathVariable Long userId){
-        userService.switchPermitByUserId(userId);
+
+    @DeleteMapping("/auth/admin/{adminId}/delete")
+    public ResponseEntity<?> deleteByAdminId(@PathVariable Long adminId , Authentication auth){
+        userService.deleteByAdminId(adminId , auth);
         return ResponseEntity.ok(null);
     }
 
-    @DeleteMapping("/auth/user/{userId}/delete")
-    public ResponseEntity<?> deleteByUserId(@PathVariable Long userId , Authentication auth){
-        userService.deleteByUserId(userId , auth);
-        return ResponseEntity.ok(null);
-    }
-
-    @GetMapping("/user/is-email-exist/{email}")
+    @GetMapping("/auth/is-email-exist/{email}")
     public ResponseEntity<?> isEmailExist(@PathVariable String email , Authentication auth){
         return ResponseEntity.ok(userService.isExistEmail(auth , email));
     }
 
-    @GetMapping("/auth/user/is-email-exist/{email}")
+    @GetMapping("/auth/admin/is-email-exist/{email}")
     public ResponseEntity<?> isEmailExistForAuth(@PathVariable String email , Authentication auth){
         return ResponseEntity.ok(userService.isExistEmail(auth , email));
     }

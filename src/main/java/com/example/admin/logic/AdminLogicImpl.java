@@ -13,7 +13,7 @@ public class AdminLogicImpl implements AdminLogic {
     AdminRepository adminRepository;
 
     @Override
-    public Admin getEntitiyByUserId(Long userId) {
+    public Admin getEntityByAdminId(Long userId) {
         Admin admin = adminRepository.findById(userId)
                 .orElseThrow(()->new IllegalArgumentException());
         return admin;

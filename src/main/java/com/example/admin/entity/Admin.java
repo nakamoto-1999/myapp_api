@@ -22,14 +22,11 @@ public class Admin {
     @Column(name = "name")
     String name;
 
-    @Column(name = "emal")
+    @Column(name = "email")
     String email;
 
     @Column(name = "password")
     String password;
-
-    @Column(name = "is_deleted")
-    boolean isDeleted;
 
     @Column(name = "createdAt")
     Timestamp createdAt;

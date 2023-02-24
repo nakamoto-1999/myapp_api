@@ -15,7 +15,7 @@ public interface AdminRepository extends JpaRepository<Admin, Long> {
     List<Admin> findAllByOrderByAdminId();
 
     //有効なユーザーの中で、同一のメールアドレスが存在するかを調べる
-    @Query("select u from User u where u.isDeleted = 0 and u.email = ?1")
+    @Query("select a from Admin a where a.email = ?1")
     Optional<Admin> findByEmail(String email);
 
 }

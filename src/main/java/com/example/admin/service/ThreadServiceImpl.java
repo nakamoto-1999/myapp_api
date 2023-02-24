@@ -60,6 +60,16 @@ public class ThreadServiceImpl implements ThreadService{
     @Override
     public ThreadResponse createThread(@NotNull HttpServletRequest req, @NotNull ThreadCreateRequest reqBody) {
 
+        //IPに紐づいたユーザーがすでに存在する場合は該当ユーザーを、存在しない場合は新しく作る
+        User user = userLogic.isUserExistByIp(req.getRemoteAddr()) ?
+                userLogic.getEntityByIp(req.getRemoteAddr())
+                :
+                userLogic.createUser(req);
+
+        if(!user.isPermitted()){
+            throw new AccessDeniedException("アクセス規制中です。");
+        }
+
         Thread thread = new Thread();
         thread.setOverview(reqBody.getOverview());
         thread.setPoint(reqBody.getPoint());
@@ -67,7 +77,6 @@ public class ThreadServiceImpl implements ThreadService{
         thread.setBlue(reqBody.getBlue());
         thread.setClosed(false);
         thread.setConcluded(false);
-        User user = userLogic.getEntity(req);
         thread.setUser(user);
         thread.setDeleted(false);
         thread.setCreatedAt(timestampUtil.getNow());
@@ -87,15 +96,11 @@ public class ThreadServiceImpl implements ThreadService{
     }
 
     @Override
-    public List<ThreadResponse> getAllResponseByUserId(Long userId ,@NotNull Authentication auth) {
-        @NotNull MyUserDetails userDetails = auth.getPrincipal() instanceof MyUserDetails ?
-                (MyUserDetails) auth.getPrincipal() : null;
-        System.out.println(userId);
-        if(userDetails.getUserId() != userId)
-            throw new AccessDeniedException("");
+    public List<ThreadResponse> getAllResponseByRequest(@NotNull HttpServletRequest req) {
 
-
-        List<Thread> threads = threadRepository.findAllByUserIdOrderByThreadId(userId);
+        User user = userLogic.getEntityByIp(req.getRemoteAddr());
+        //List<Thread> threads = threadRepository.findAllByUserIdOrderByThreadId(user.getUserId());
+        List<Thread> threads = user.getThreads();
         List<ThreadResponse> threadResponses = new ArrayList<>();
         threads.forEach((Thread thread)->{
             threadResponses.add(new ThreadResponse(thread));
@@ -125,19 +130,21 @@ public class ThreadServiceImpl implements ThreadService{
     }
 
     @Override
-    public void concludeByThreadId(Long threadId,@NotNull Authentication auth,
+    public void concludeByThreadId(Long threadId,@NotNull HttpServletRequest req,
                                    @NotNull ThreadConcludeRequest reqBody) {
 
-        @NotNull MyUserDetails userDetails = auth.getPrincipal() instanceof MyUserDetails?
-                (MyUserDetails) auth.getPrincipal() : null;
 
         Thread thread = threadLogic.getEntityByThreadId(threadId);
         //認可を受けたユーザーとスレッドを立てたユーザーが異なるとき、アクセス拒否
-        if( userDetails.getUserId() != thread.getUser().getUserId() )
+        if(userLogic.getEntityByIp(req.getRemoteAddr()).getUserId() != thread.getUser().getUserId() ){
             throw new AccessDeniedException("");
+        }
 
-        //isConcludedがtrueの場合、これ以下を実行しない
-        if(thread.isConcluded())return;
+        //すでに判決が下されている、またはスレッドが削除済みの場合はエラー
+        if(thread.isConcluded() || thread.isDeleted()){
+            throw new RuntimeException("faild to conclude thread");
+        }
+
         thread.setClosed(true);
         thread.setConcluded(true);
         thread.setConcludedColor(
@@ -157,11 +164,13 @@ public class ThreadServiceImpl implements ThreadService{
         Thread thread = threadLogic.getEntityByThreadId(threadId);
         User user = userLogic.getEntityByUserId(userId);
 
-        //リクエストを投げたユーザーとスレッドを立てたユーザーのIPアドレスが一致
-        if(userLogic.getEntityByIp(req.getRemoteAddr()).getUserId() != thread.getUser().getUserId())
+        //リクエストを投げたユーザーとスレッドを立てたユーザーのIPアドレスが一致しているか
+        if(userLogic.getEntityByIp(req.getRemoteAddr()).getUserId()
+                != thread.getUser().getUserId()) {
             throw new AccessDeniedException("");
+        }
 
-        //管理者でログインしているユーザー、及び該当のスレッドを立てたユーザー、既にブロックリストへ追加ずみのユーザーはブロックリストに追加できない
+        //スレッドを立てたユーザー、ブロックリストへ追加済みのユーザーはブロックリストに追加できない
         if(thread.getUser().getUserId() == user.getUserId() ||
                 threadUtil.isUserIdExistInBlockedList(thread.getBlockedUsers() , user.getUserId())) {
             throw new RuntimeException("faild to add user into blocked list");
@@ -180,8 +189,9 @@ public class ThreadServiceImpl implements ThreadService{
                 = blockedUserOfThreadRepository.findById(new PkOfThreadAndUser(threadId , userId))
                 .orElseThrow(() -> new IllegalArgumentException());
 
-        //スレ主でなければ、アクセス拒否
-        if(userLogic.getEntityByIp(req.getRemoteAddr()).getUserId() != threadId){
+        //リクエストを投げたユーザーとスレッドを立てたユーザーのIPアドレスが一致しているか
+        if(userLogic.getEntityByIp(req.getRemoteAddr()).getUserId()
+                != blockedUser.getThread().getUser().getUserId()){
             throw new AccessDeniedException("");
         }
         blockedUserOfThreadRepository.delete(blockedUser);
@@ -189,20 +199,18 @@ public class ThreadServiceImpl implements ThreadService{
     }
 
     @Override
-    public void deleteByThreadId(Long threadId ,@NotNull HttpServletRequest req, @NotNull Authentication auth) {
+    public void deleteByThreadId(Long threadId ,@NotNull HttpServletRequest req) {
 
         //IDからスレッドを取得
         Thread thread = threadLogic.getEntityByThreadId(threadId);
 
-        //ユーザーが、認証を受けておらず、スレッドを立てたユーザーとも一致しない場合は、アクセス拒否
-        if(userLogic.getEntityByIp(req.getRemoteAddr()).getUserId() != thread.getUser().getUserId() &&
-                auth == null) {
+        //リクエストを投げたユーザーとスレッドを立てたユーザーのIPアドレスが一致しているか
+        if(userLogic.getEntityByIp(req.getRemoteAddr()).getUserId() != thread.getUser().getUserId() ) {
             throw new AccessDeniedException("");
         }
 
-        //認証を受けたユーザーがAdminではなく、isCloed、isConcludedのどちらかがtrue、またはisDeletedがtrueの場合は、例外を投げる
-        if(auth != null
-            && (thread.isClosed() || thread.isConcluded() ) || thread.isDeleted()) {
+        //isCloed、isConcluded、isDeletedのいずれかがtrueの場合は、例外を投げる
+        if(thread.isClosed() || thread.isConcluded() || thread.isDeleted()) {
             throw new RuntimeException("faild to delete");
         }
 

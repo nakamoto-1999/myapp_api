@@ -7,6 +7,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+
 
 @RestController
 public class PostController {
@@ -17,14 +19,19 @@ public class PostController {
     @Autowired
     PostService postService;
 
-    @GetMapping("/auth/admin/post")
+    @GetMapping("/auth/post")
     ResponseEntity<?> getAll(){
         return ResponseEntity.ok(postService.getAllResponses());
     }
 
-    @GetMapping("/auth/admin/post/{postId}")
+    @GetMapping("/auth/post/{postId}")
     ResponseEntity<?> getByPostId(@PathVariable Long postId){
         return ResponseEntity.ok(postService.getResponseByPostId(postId));
+    }
+
+    @GetMapping("/user/post")
+    ResponseEntity<?> getByRequest(HttpServletRequest req){
+        return ResponseEntity.ok(postService.getAllResponsesByRequest(req));
     }
 
     @DeleteMapping("/auth/post/{postId}/delete")

@@ -5,6 +5,6 @@ import com.example.admin.entity.User;
 
 public interface AdminLogic {
 
-    Admin getEntitiyByUserId(Long userId);
+    Admin getEntityByAdminId(Long userId);
 
 }

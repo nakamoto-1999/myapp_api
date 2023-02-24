@@ -22,11 +22,10 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class)
 public class User {
 
-    @Column(name = "user_id")
     @Id
+    @Column(name = "user_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long userId;
 
@@ -35,11 +34,16 @@ public class User {
 
     @OneToMany(mappedBy = "user" , cascade = CascadeType.ALL , orphanRemoval = true)
     @Column(insertable = false , updatable = false)
+    @OrderBy("postId ASC")
     private List<Post> posts = new ArrayList<>();
 
     @OneToMany(mappedBy = "user" , cascade = CascadeType.ALL , orphanRemoval = true)
     @Column(insertable = false , updatable = false)
+    @OrderBy("threadId DESC")
     private List<Thread> threads;
+
+    @Column(name = "is_permitted")
+    private boolean isPermitted;
 
     @Column(name = "is_deleted")
     private boolean isDeleted;

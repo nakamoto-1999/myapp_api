@@ -17,7 +17,7 @@ public interface ThreadRepository extends JpaRepository<Thread, Long> {
     List<Thread> findAllByUserIdOrderByThreadId(Long userId);
 
     @Query("SELECT DISTINCT th FROM Thread th WHERE th.overview LIKE %?1% OR th.point LIKE %?1% OR th.red LIKE %?1% OR th.blue LIKE %?1% " +
-            "OR th.user.name LIKE %?1% ORDER BY th.createdAt DESC")
+            "ORDER BY th.createdAt DESC ")
     List<Thread> findAllByKeyword(String keyword);
 
     //レス数が1000以上、レス数が0かつスレッド作成後の60分経過、最新のレス投稿後365日経過しているスレッドのis_deletedを1にする

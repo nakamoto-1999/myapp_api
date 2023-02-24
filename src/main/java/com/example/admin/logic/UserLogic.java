@@ -8,7 +8,8 @@ import javax.servlet.http.HttpServletRequest;
 
 public interface UserLogic {
 
-    User getEntityByReq(HttpServletRequest req);
+    User createUser(HttpServletRequest req);
+    boolean isUserExistByIp(String ip);
     User getEntityByUserId(Long userId);
     User getEntityByIp(String ip);
 

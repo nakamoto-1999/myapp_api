@@ -2,9 +2,11 @@ package com.example.admin.service;
 
 import com.example.admin.entity.Post;
 import com.example.admin.entity.Thread;
+import com.example.admin.entity.User;
 import com.example.admin.logic.ColorLogic;
 import com.example.admin.logic.ThreadLogic;
 import com.example.admin.logic.AdminLogic;
+import com.example.admin.logic.UserLogic;
 import com.example.admin.repository.PostRepository;
 import com.example.admin.request.PostCreateRequest;
 import com.example.admin.response.PostResponse;
@@ -40,7 +42,7 @@ public class PostServiceImpl implements PostService{
     ThreadUtil threadUtil;
 
     @Autowired
-    AdminLogic userLogic;
+    UserLogic userLogic;
 
     @Autowired
     ThreadLogic threadLogic;
@@ -49,38 +51,35 @@ public class PostServiceImpl implements PostService{
     ColorLogic colorLogic;
 
     @Override
-    public void createPost(@NotNull Authentication auth,@NotNull HttpServletRequest req,@NotNull PostCreateRequest reqBody ,
-                           Long threadId) {
-
-        @NotNull MyUserDetails userDetails =
-                auth.getPrincipal() instanceof MyUserDetails ? (MyUserDetails) auth.getPrincipal() :null;
-
-        //許可されていないユーザーの場合アクセス拒否
-        if(!userDetails.isPermitted())
-            throw new AccessDeniedException("");
+    public void createPost(@NotNull HttpServletRequest req,@NotNull PostCreateRequest reqBody , Long threadId) {
 
         //スレッドへの書き込み---------------------------------------------------------------
         Thread thread = threadLogic.getEntityByThreadId(threadId);
 
+        //IPに紐づいたユーザーが存在する場合はそのユーザーを取得し、存在しない場合は新しく作る
+        User user = userLogic.isUserExistByIp(req.getRemoteAddr()) ?
+                userLogic.getEntityByIp(req.getRemoteAddr()) :
+                userLogic.createUser(req);
+
+        if(!user.isPermitted()){
+            throw new AccessDeniedException("アクセス規制中です。");
+        }
+
         //Admin権限者、もしくはスレッドを立てたユーザー以外で、スレッドのブロックユーザーリストに登録されているユーザーは、アクセス拒否
-        if(!securityUtil.isAdmin(userDetails.getAuthorities()) &&
-                userDetails.getUserId() != thread.getUser().getUserId() &&
-                    threadUtil.isUserIdExistInBlockedList(thread.getBlockedUsers() , userDetails.getUserId()))
-                        throw new AccessDeniedException("blocked by thread owner!");
+        if(user.getUserId() != thread.getUser().getUserId() &&
+                    threadUtil.isUserIdExistInBlockedList(thread.getBlockedUsers() , user.getUserId())) {
+            throw new AccessDeniedException("スレッド主から追放されています。");
+        }
 
         //スレッドがclosedの要件に該当するとき、書き込み不可とするストッパー
-        if(threadUtil.isStopped(thread))
-            throw new RuntimeException("Thread Stopper worked!");
+        if(threadUtil.isStopped(thread)) {
+            throw new RuntimeException("スレッドが閉鎖されました。");
+        }
 
         Post post = new Post();
-        post.setUser(
-                userLogic.getEntitiyByUserId(userDetails.getUserId())
-        );
+        post.setUser(user);
         post.setThread(thread);
-        post.setIp(req.getRemoteAddr());
-        post.setColor(
-                colorLogic.getEntityByColorId(reqBody.getColorId())
-        );
+        post.setColor(colorLogic.getEntityByColorId(reqBody.getColorId()));
         post.setContent(reqBody.getContent());
         post.setDeleted(false);
         post.setCreatedAt(timestampUtil.getNow());
@@ -102,9 +101,10 @@ public class PostServiceImpl implements PostService{
     }
 
     @Override
-    public List<PostResponse> getAllResponsesByUserId(Long userId) {
+    public List<PostResponse> getAllResponsesByRequest(@NotNull HttpServletRequest req) {
 
-        List<Post> posts = postRepository.findAllByUserIdOrderByPostId(userId);
+        User user = userLogic.getEntityByIp(req.getRemoteAddr());
+        List<Post> posts = user.getPosts();
         List<PostResponse> postResponses = new ArrayList<>();
         posts.forEach((Post post)->{
             postResponses.add(new PostResponse(post));

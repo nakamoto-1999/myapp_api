@@ -24,20 +24,19 @@ public class ThreadController {
     @Autowired
     PostService postService;
 
-    @PostMapping("/auth/thread/create")
-    ResponseEntity<?> createThread(HttpServletRequest req, Authentication auth , @Validated @RequestBody ThreadCreateRequest reqBody){
+    @PostMapping("/thread/create")
+    ResponseEntity<?> createThread(HttpServletRequest req , @Validated @RequestBody ThreadCreateRequest reqBody){
         ThreadResponse response = threadService.createThread( req , reqBody);
         return ResponseEntity.ok(response);
     }
 
-    @PostMapping("/auth/thread/{threadId}/post/create")
+    @PostMapping("/thread/{threadId}/post/create")
     //IPアドレスを取得するためにHttpServletRequestを使用する
-    ResponseEntity<?> createPost(Authentication auth ,HttpServletRequest req
+    ResponseEntity<?> createPost( HttpServletRequest req
             , @Validated @RequestBody PostCreateRequest reqBody ,@PathVariable Long threadId){
 
-        postService.createPost(auth , req ,reqBody ,threadId);
+        postService.createPost(req ,reqBody ,threadId);
         return ResponseEntity.ok(null);
-
     }
 
     @GetMapping("/thread")
@@ -45,9 +44,9 @@ public class ThreadController {
         return ResponseEntity.ok(threadService.getAllResponses());
     }
 
-    @GetMapping("/auth/user/{userId}/thread")
-    ResponseEntity<?> getAllThreadByUserId(@PathVariable Long userId , Authentication auth){
-        return ResponseEntity.ok(threadService.getAllResponseByUserId(userId , auth));
+    @GetMapping("/user/thread")
+    ResponseEntity<?> getAllThreadByUserId(HttpServletRequest req){
+        return ResponseEntity.ok(threadService.getAllResponseByRequest(req));
     }
 
     @GetMapping("/thread/search")
@@ -61,28 +60,28 @@ public class ThreadController {
         return ResponseEntity.ok(response);
     }
 
-    @PutMapping("/auth/thread/{threadId}/conclude")
-    ResponseEntity<?> concludeByThreadId(@PathVariable Long threadId, Authentication auth ,
+    @PutMapping("/thread/{threadId}/conclude")
+    ResponseEntity<?> concludeByThreadId(@PathVariable Long threadId, HttpServletRequest req ,
                                          @Validated @RequestBody ThreadConcludeRequest reqBody) {
-        threadService.concludeByThreadId(threadId , auth , reqBody);
+        threadService.concludeByThreadId(threadId , req , reqBody);
         return ResponseEntity.ok(null);
     }
 
-    @PostMapping("/auth/thread/{threadId}/user/{userId}/block")
-    ResponseEntity<?> blockUser(@PathVariable Long threadId , @PathVariable Long userId , Authentication auth){
-        threadService.blockUser(threadId , userId , auth);
+    @PostMapping("/thread/{threadId}/block/user/{userId}")
+    ResponseEntity<?> blockUser(@PathVariable Long threadId , @PathVariable Long userId , HttpServletRequest req){
+        threadService.blockUser(threadId , userId , req);
         return ResponseEntity.ok(null);
     }
 
-    @DeleteMapping("/auth/thread/{threadId}/user/{userId}/unblock")
-    ResponseEntity<?> unblockUser(@PathVariable Long threadId , @PathVariable Long userId , Authentication auth){
-        threadService.unblockUser(threadId , userId , auth);
+    @DeleteMapping("/thread/{threadId}/unblock/user/{userId}")
+    ResponseEntity<?> unblockUser(@PathVariable Long threadId , @PathVariable Long userId , HttpServletRequest req){
+        threadService.unblockUser(threadId , userId , req);
         return ResponseEntity.ok(null);
     }
 
-    @DeleteMapping("/auth/thread/{threadId}/delete")
-    ResponseEntity<?> deleteThreadByThreadId(@PathVariable Long threadId , Authentication auth){
-        threadService.deleteByThreadId(threadId , auth);
+    @DeleteMapping("/thread/{threadId}/delete")
+    ResponseEntity<?> deleteThreadByThreadId(@PathVariable Long threadId , HttpServletRequest req ) {
+        threadService.deleteByThreadId(threadId , req);
         return ResponseEntity.ok(null);
     }
 

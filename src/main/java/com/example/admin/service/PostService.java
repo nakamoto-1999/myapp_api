@@ -11,10 +11,10 @@ import java.util.List;
 
 public interface PostService {
 
-    void createPost(Authentication auth , HttpServletRequest req , PostCreateRequest reqBody , Long threadId);
+    void createPost( HttpServletRequest req , PostCreateRequest reqBody , Long threadId);
     List<PostResponse> getAllResponses();
     PostResponse getResponseByPostId(Long postId);
-    List<PostResponse> getAllResponsesByUserId(Long userId);
+    List<PostResponse> getAllResponsesByRequest(HttpServletRequest req);
     List<PostResponse> getAllResponseByThreadId(Long threadId);
     void deleteByPostId(Long postId , Authentication auth);
 
